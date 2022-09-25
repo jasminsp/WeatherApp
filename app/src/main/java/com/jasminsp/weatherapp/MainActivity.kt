@@ -11,11 +11,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
+import com.jasminsp.weatherapp.weather.WeatherViewModel
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        private lateinit var weatherViewModel: WeatherViewModel
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            weatherViewModel = WeatherViewModel(application)
             WeatherAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -23,6 +28,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     Greeting("Android")
+                    weatherViewModel.getWeather()
                 }
             }
         }
