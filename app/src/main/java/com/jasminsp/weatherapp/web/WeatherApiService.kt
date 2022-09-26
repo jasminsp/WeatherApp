@@ -1,5 +1,6 @@
 package com.jasminsp.weatherapp.web
 
+import com.jasminsp.weatherapp.database.FavouriteData
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -11,8 +12,8 @@ object WeatherApiService {
 
     // Get request to endpoint
     interface Service {
-        @GET("forecast?latitude=60.192059&longitude=24.9458311&hourly=temperature_2m")
-        suspend fun getWeather()
+        @GET("forecast?hourly=temperature_2m")
+        suspend fun getHourlyWeatherWithLocation(@Query("latitude") lat: Double, @Query("longitude") long: Double): FavouriteData
     }
 
     // Creating retrofit

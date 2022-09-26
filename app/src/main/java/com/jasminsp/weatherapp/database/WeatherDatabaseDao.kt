@@ -7,9 +7,8 @@ import androidx.room.*
 data class FavouriteData(
     @PrimaryKey(autoGenerate = true)
     val favouriteUid: Long,
-    val locationName: String,
-    val locationLatitude: Long,
-    val locationLongitude: Long,
+    val latitude: Double,
+    val longitude: Double,
 )
 
 //Defining functions that can be used with the database
