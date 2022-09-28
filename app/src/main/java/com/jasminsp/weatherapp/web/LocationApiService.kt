@@ -9,10 +9,27 @@ object LocationApiService {
         // API base url
         private const val URL = "https://geocoding-api.open-meteo.com/v1/"
 
+        // data classes to hold the search result
+        object Model {
+            data class  Result (val results: Array<Location>)
+            data class Location (
+                val id: Int,
+                val name: String,
+                val latitude: Double,
+                val longitude: Double,
+                val country_code: String?,
+                val timezone: String?,
+                val country: String?,
+                val admin1: String?,
+                val admin2: String?,
+                val admin3: String?
+            )
+        }
+
         // Get request to endpoint
         interface Service {
             @GET("search?")
-            suspend fun getLocationsByName(@Query("name") action: String)
+            suspend fun getLocationsByName(@Query("name") action: String): Model.Result
         }
 
         // Creating retrofit
