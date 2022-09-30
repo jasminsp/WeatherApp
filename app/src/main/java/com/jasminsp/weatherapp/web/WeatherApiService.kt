@@ -20,8 +20,27 @@ object WeatherApiService {
         val current_weather: BaseCurrentWeather,
         val hourly: BaseHourly,
         val daily: BaseDaily,
-    )
-        data class BaseCurrentWeather (
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as MainWeather
+
+            if (latitude != other.latitude) return false
+            if (longitude != other.longitude) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = latitude.hashCode()
+            result = 31 * result + longitude.hashCode()
+            return result
+        }
+    }
+
+    data class BaseCurrentWeather (
             val temperature: Double,
             val windspeed: Double,
             val weathercode: Byte,

@@ -21,11 +21,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.viewModelScope
 import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
 import com.jasminsp.weatherapp.weather.WeatherViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.Console
 
 class MainActivity : ComponentActivity() {
@@ -42,49 +43,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    GetLocations(weatherViewModel)
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun GetLocations(viewModel: WeatherViewModel) {
-        val searchInput by remember { mutableStateOf("berlin") }
-        viewModel.getLocations(searchInput)
-        ShowSearchResult(viewModel)
-    }
-
-    @Composable
-    fun ShowSearchResult(viewModel: WeatherViewModel) {
-        val searchResult by viewModel.searchedLocations.observeAsState()
-
-        Column(Modifier.fillMaxWidth()) {
-            // Place for search input
-            LazyColumn(Modifier.fillMaxWidth()) {
-                searchResult?.results?.forEach {
-                    item {
-                        Card(
-                            Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    onSearchResultClick(viewModel, it.latitude, it.longitude)
-                                }) {
-                            Column(Modifier.padding(all = 20.dp)) {
-                                Row(Modifier.fillMaxWidth().padding(start = 15.dp), Arrangement.SpaceBetween, Alignment.CenterVertically) {
-                                    if (it.admin3 != null) Text(
-                                        it.admin3,
-                                        fontSize = 22.sp
-                                    ) else it.admin2?.let { name -> Text(name, fontSize = 22.sp) }
-                                    Text("Add", Modifier.padding(top = 20.dp), color = Color.Gray)
-                                }
-                                Text(
-                                    "${it.admin1}, ${it.country}",
-                                    Modifier.padding(start = 15.dp),
-                                    fontWeight = FontWeight(400), color = Color.Gray
-                                )
-                            }
-                        }
+                    Column {
+                        ShowFavourites(weatherViewModel)
+                        SearchLocations(weatherViewModel)
                     }
                 }
             }
@@ -92,8 +53,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// Get data of the location clicked
-private fun onSearchResultClick(viewModel: WeatherViewModel, lat: Double, long: Double) {
-    viewModel.getFavouriteWeather(lat, long)
-    viewModel.addFavourite(lat, long)
+// Save new favourite to db
+fun addFavourite(viewModel: WeatherViewModel, lat: Double, long: Double) {
+        viewModel.addFavourite(lat, long)
 }

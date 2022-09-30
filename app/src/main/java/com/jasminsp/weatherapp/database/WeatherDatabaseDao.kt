@@ -6,7 +6,7 @@ import com.google.gson.internal.bind.util.ISO8601Utils
 import com.jasminsp.weatherapp.web.WeatherApiService
 import java.text.DateFormat
 
-@Entity(tableName = "user_favourites")
+@Entity(tableName = "user_favourites", indices = [Index(value = ["latitude", "longitude"], unique = true)])
 data class FavouriteData(
     @PrimaryKey(autoGenerate = true)
     val locationUid: Long,
