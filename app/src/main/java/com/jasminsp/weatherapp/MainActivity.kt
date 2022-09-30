@@ -13,14 +13,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import com.jasminsp.weatherapp.sensor.SensorViewModel
 import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
 import com.jasminsp.weatherapp.weather.WeatherViewModel
-import kotlinx.coroutines.*
-import java.io.Console
 
 class MainActivity : ComponentActivity(), SensorEventListener {
     companion object {
@@ -44,9 +41,9 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     color = MaterialTheme.colors.background
                 ) {
                     weatherViewModel.getLocations("Berlin")
-                    Text(tempData.value.toString())
                     //weatherViewModel.getFavouriteWeather(52.52437, 13.41053)
                     Column {
+                        Text("Sensor: ${tempData.value}")
                         ShowFavourites(weatherViewModel)
                         SearchLocations(weatherViewModel)
                     }
