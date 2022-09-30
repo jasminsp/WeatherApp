@@ -22,6 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.jasminsp.weatherapp.sensor.SensorViewModel
 import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
 import com.jasminsp.weatherapp.weather.WeatherViewModel
@@ -36,6 +39,8 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         setUpSensor()
         setContent {
+            val navController = rememberNavController()
+
             weatherViewModel = WeatherViewModel(application)
             sensorViewModel = SensorViewModel()
             sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -47,9 +52,12 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+                    NavHost(navController, startDestination = "main view") {
+                        composable("main view") { }
+                        composable("my location") { }
+                        composable("detail view") { }
+                    }
                     weatherViewModel.getLocations("Berlin")
-                    Text(tempData.value.toString())
-                    //weatherViewModel.getFavouriteWeather(52.52437, 13.41053)
                 }
             }
         }
