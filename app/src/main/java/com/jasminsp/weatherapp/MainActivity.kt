@@ -9,9 +9,13 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -19,9 +23,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -53,9 +60,9 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     color = MaterialTheme.colors.background
                 ) {
                     NavHost(navController, startDestination = "main view") {
-                        composable("main view") { }
-                        composable("my location") { }
-                        composable("detail view") { }
+                        composable("main view") { MainView(navController) }
+                        composable("my location") { MyLocation(navController) }
+                        composable("detail view") { DetailView(navController) }
                     }
                     weatherViewModel.getLocations("Berlin")
                 }
@@ -93,6 +100,40 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)?.also {
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+    }
+}
+
+@Composable
+fun MainView (navController: NavController) {
+    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("Main view")
+        Button(onClick = { navController.navigate("my location") }) {
+            Text("Navigate to my location")
+        }
+        Spacer(Modifier.height(8.dp))
+        Button(onClick = { navController.navigate("detail view") }) {
+            Text("Navigate to detail view")
+        }
+    }
+}
+
+@Composable
+fun DetailView (navController: NavController) {
+    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("Detail View")
+        Button(onClick = { navController.navigateUp() }) {
+            Text("Back to Main View")
+        }
+    }
+}
+
+@Composable
+fun MyLocation (navController: NavController) {
+    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("My Location")
+        Button(onClick = { navController.navigateUp() }) {
+            Text("Back to Main View")
         }
     }
 }
