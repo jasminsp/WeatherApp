@@ -61,9 +61,9 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     color = MaterialTheme.colors.background
                 ) {
                     NavHost(navController, startDestination = "main view") {
-                        composable("main view") { MainView(navController) }
-                        composable("my location") { MyLocation(navController) }
-                        composable("detail view") { DetailView(navController, tempData) }
+                        composable("main view") { MainView(navController) } // Replace with reference to official Composable
+                        composable("my location") { MyLocation(navController) } // Replace with reference to official Composable
+                        composable("detail view") { DetailView(navController, tempData) } // Replace with reference to official Composable
                     }
                     weatherViewModel.getLocations("Berlin")
                 }
@@ -105,6 +105,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     }
 }
 
+// Mock composable, delete when real one is done
 @Composable
 fun MainView (navController: NavController) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -119,6 +120,7 @@ fun MainView (navController: NavController) {
     }
 }
 
+// Mock composable, delete when real one is done
 @Composable
 fun DetailView (navController: NavController, tempData: State<Float?>) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -130,6 +132,7 @@ fun DetailView (navController: NavController, tempData: State<Float?>) {
     }
 }
 
+// Mock composable, delete when real one is done
 @Composable
 fun MyLocation (navController: NavController) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
