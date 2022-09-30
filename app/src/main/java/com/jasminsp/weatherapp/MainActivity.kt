@@ -20,6 +20,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,7 +63,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     NavHost(navController, startDestination = "main view") {
                         composable("main view") { MainView(navController) }
                         composable("my location") { MyLocation(navController) }
-                        composable("detail view") { DetailView(navController) }
+                        composable("detail view") { DetailView(navController, tempData) }
                     }
                     weatherViewModel.getLocations("Berlin")
                 }
@@ -119,12 +120,13 @@ fun MainView (navController: NavController) {
 }
 
 @Composable
-fun DetailView (navController: NavController) {
+fun DetailView (navController: NavController, tempData: State<Float?>) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Detail View")
         Button(onClick = { navController.navigateUp() }) {
             Text("Back to Main View")
         }
+        Text(tempData.value.toString())
     }
 }
 
