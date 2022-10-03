@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Forecast</string>
+    <string name="placeholderSearch">Search Locations</string>
+    <string name="city">HELSINKI</string>
+    <string name="temperature" translatable="false">27</string>
+    <string name="time" translatable="false">5</string>
+    <string name="am" translatable="false">am</string>
+    <string name="pm" translatable="false">pm</string>
+    <string name="min" translatable="false">24</string>
+    <string name="max" translatable="false">29</string>
+    <string name="forecast_letters">Clear Sky</string>
+
 </resources>

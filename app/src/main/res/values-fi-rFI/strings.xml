@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Forecast</string>
+    <string name="placeholderSearch">Etsi paikkoja</string>
+    <string name="forecast_letters">Kirkasta</string>
+    <string name="max">29</string>
+    <string name="min">24</string>
+    <string name="city">HELSINKI</string>
 </resources>

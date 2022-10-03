@@ -9,26 +9,20 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -61,7 +55,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     color = MaterialTheme.colors.background
                 ) {
                     NavHost(navController, startDestination = "main view") {
-                        composable("main view") { MainView(navController) } // Replace with reference to official Composable
+                        composable("main view") { MainView(navController, weatherViewModel) } // Replace with reference to official Composable
                         composable("my location") { MyLocation(navController) } // Replace with reference to official Composable
                         composable("detail view") { DetailView(navController, tempData) } // Replace with reference to official Composable
                     }
@@ -107,10 +101,11 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 // Save new favourite to db
 fun addFavourite(viewModel: WeatherViewModel, lat: Double, long: Double) {
         viewModel.addFavourite(lat, long)
+}
 
 // Mock composable, delete when real one is done
 @Composable
-fun MainView (navController: NavController) {
+fun MainView (navController: NavController, weatherViewModel: WeatherViewModel) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Main view")
         Button(onClick = { navController.navigate("my location") }) {
@@ -124,7 +119,6 @@ fun MainView (navController: NavController) {
         weatherViewModel.getLocations("Berlin")
         //weatherViewModel.getFavouriteWeather(52.52437, 13.41053)
         Column {
-            Text("Sensor: ${tempData.value}")
             ShowFavourites(weatherViewModel)
             SearchLocations(weatherViewModel)
         }
