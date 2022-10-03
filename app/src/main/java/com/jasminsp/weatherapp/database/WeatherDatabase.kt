@@ -1,9 +1,7 @@
 package com.jasminsp.weatherapp.database
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
 
 //Creating the database
 @Database(entities = [FavouriteData::class], version = 2, exportSchema = false)

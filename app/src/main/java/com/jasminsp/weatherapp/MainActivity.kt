@@ -9,6 +9,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,12 +24,9 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
@@ -65,7 +65,6 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                         composable("my location") { MyLocation(navController) } // Replace with reference to official Composable
                         composable("detail view") { DetailView(navController, tempData) } // Replace with reference to official Composable
                     }
-                    weatherViewModel.getLocations("Berlin")
                 }
             }
         }
@@ -105,6 +104,10 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     }
 }
 
+// Save new favourite to db
+fun addFavourite(viewModel: WeatherViewModel, lat: Double, long: Double) {
+        viewModel.addFavourite(lat, long)
+
 // Mock composable, delete when real one is done
 @Composable
 fun MainView (navController: NavController) {
@@ -116,6 +119,14 @@ fun MainView (navController: NavController) {
         Spacer(Modifier.height(8.dp))
         Button(onClick = { navController.navigate("detail view") }) {
             Text("Navigate to detail view")
+        }
+        
+        weatherViewModel.getLocations("Berlin")
+        //weatherViewModel.getFavouriteWeather(52.52437, 13.41053)
+        Column {
+            Text("Sensor: ${tempData.value}")
+            ShowFavourites(weatherViewModel)
+            SearchLocations(weatherViewModel)
         }
     }
 }
