@@ -10,7 +10,7 @@ class SensorViewModel : ViewModel() {
     var presData = MutableLiveData(0f)
     var dewPoint = calculateDewPoint(tempData.value!!, humData.value!!)
 
-    // TODO: Return sensor data with Math.floored value (1 decimal?)
+    // TODO: Would be nice to get sensor data with Math.floored value (1 decimal?) and not do the conversion in MainActivity
 
     // functions needed if tempData is set to private
     fun setTemp(temp: Float) {
@@ -37,7 +37,6 @@ class SensorViewModel : ViewModel() {
         return presData.value
     }
 
-    // based on https://github.com/PacktPublishing/Android-Sensor-Programming-By-Example
     // returns NaN if temperature and/or humidity is 0.0
     fun calculateDewPoint(temperature: Float, relativeHumidity: Float): Float {
         var dewP = 0f
