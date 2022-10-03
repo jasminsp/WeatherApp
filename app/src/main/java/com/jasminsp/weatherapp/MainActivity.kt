@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     color = MaterialTheme.colors.background
                 ) {
                     NavHost(navController, startDestination = "main view") {
-                        composable("main view") { MainView(navController) } // Replace with reference to official Composable
+                        composable("main view") { MainView(navController, weatherViewModel, tempData) } // Replace with reference to official Composable
                         composable("my location") { MyLocation(navController) } // Replace with reference to official Composable
                         composable("detail view") { DetailView(navController, tempData) } // Replace with reference to official Composable
                     }
@@ -106,11 +106,12 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 
 // Save new favourite to db
 fun addFavourite(viewModel: WeatherViewModel, lat: Double, long: Double) {
-        viewModel.addFavourite(lat, long)
+    viewModel.addFavourite(lat, long)
+}
 
 // Mock composable, delete when real one is done
 @Composable
-fun MainView (navController: NavController) {
+fun MainView (navController: NavController, weatherViewModel: WeatherViewModel, tempData: State<Float?>) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Main view")
         Button(onClick = { navController.navigate("my location") }) {
