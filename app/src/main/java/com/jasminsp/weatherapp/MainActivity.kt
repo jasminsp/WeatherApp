@@ -42,16 +42,22 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         private lateinit var weatherViewModel: WeatherViewModel
         private lateinit var sensorViewModel: SensorViewModel
         private lateinit var sensorManager: SensorManager
+        // do these need to be here?
+        private lateinit var sensorAmbTemp: Sensor
+        private lateinit var sensorRelHum: Sensor
+        private lateinit var sensorAmbPres: Sensor
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+
         setUpSensor()
         setContent {
             val navController = rememberNavController()
 
             weatherViewModel = WeatherViewModel(application)
             sensorViewModel = SensorViewModel()
-            sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
             val tempData = sensorViewModel.tempData.observeAsState()
 
             WeatherAppTheme {
@@ -61,7 +67,13 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     color = MaterialTheme.colors.background
                 ) {
                     NavHost(navController, startDestination = "main view") {
-                        composable("main view") { MainView(navController) } // Replace with reference to official Composable
+                        composable("main view") {
+                            MainView(
+                                navController,
+                                weatherViewModel,
+                                tempData
+                            )
+                        } // Replace with reference to official Composable
                         composable("my location") { MyLocation(navController) } // Replace with reference to official Composable
                         composable("detail view") { DetailView(navController, tempData) } // Replace with reference to official Composable
                     }
@@ -79,7 +91,14 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         // TODO: update an observed variable when the received sensor value changes
         if (event.sensor?.type == Sensor.TYPE_AMBIENT_TEMPERATURE) {
             sensorViewModel.setTemp(event.values[0])
-            Log.i("SENSOR", event.values[0].toString())
+        }
+        if (event.sensor?.type == Sensor.TYPE_RELATIVE_HUMIDITY) {
+            // sensorViewModel.setHum(event.values[0])
+            Log.i("SENSOR_HUM", event.values[0].toString())
+        }
+        if (event.sensor?.type == Sensor.TYPE_PRESSURE) {
+            // sensorViewModel.setHum(event.values[0])
+            Log.i("SENSOR_PRES", event.values[0].toString())
         }
     }
 
@@ -97,8 +116,21 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 
     private fun setUpSensor() {
         Log.i("SENSOR", "setUpSensor called")
-        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        val sensorAmbTemp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
+        val sensorRelHum = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY)
+        val sensorAmbPres = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
+        /*
         sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)?.also {
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+         */
+        sensorAmbTemp.also {
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+        sensorRelHum.also {
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+        sensorAmbPres.also {
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_NORMAL)
         }
     }
@@ -106,11 +138,12 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 
 // Save new favourite to db
 fun addFavourite(viewModel: WeatherViewModel, lat: Double, long: Double) {
-        viewModel.addFavourite(lat, long)
+    viewModel.addFavourite(lat, long)
+}
 
 // Mock composable, delete when real one is done
 @Composable
-fun MainView (navController: NavController) {
+fun MainView(navController: NavController, weatherViewModel: WeatherViewModel, tempData: State<Float?>) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Main view")
         Button(onClick = { navController.navigate("my location") }) {
@@ -120,7 +153,7 @@ fun MainView (navController: NavController) {
         Button(onClick = { navController.navigate("detail view") }) {
             Text("Navigate to detail view")
         }
-        
+
         weatherViewModel.getLocations("Berlin")
         //weatherViewModel.getFavouriteWeather(52.52437, 13.41053)
         Column {
@@ -133,23 +166,23 @@ fun MainView (navController: NavController) {
 
 // Mock composable, delete when real one is done
 @Composable
-fun DetailView (navController: NavController, tempData: State<Float?>) {
+fun MyLocation(navController: NavController) {
+    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("My Location")
+        Button(onClick = { navController.navigateUp() }) {
+            Text("Back to Main View")
+        }
+    }
+}
+
+// Mock composable, delete when real one is done
+@Composable
+fun DetailView(navController: NavController, tempData: State<Float?>) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Detail View")
         Button(onClick = { navController.navigateUp() }) {
             Text("Back to Main View")
         }
         Text(tempData.value.toString())
-    }
-}
-
-// Mock composable, delete when real one is done
-@Composable
-fun MyLocation (navController: NavController) {
-    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("My Location")
-        Button(onClick = { navController.navigateUp() }) {
-            Text("Back to Main View")
-        }
     }
 }
