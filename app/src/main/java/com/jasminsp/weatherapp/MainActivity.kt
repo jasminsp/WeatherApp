@@ -161,15 +161,15 @@ fun MainView(navController: NavController, weatherViewModel: WeatherViewModel, s
         }
         Spacer(Modifier.height(8.dp))
         Button(onClick = { sensorViewModel.calculateDewPoint(tempData.value!!, humData.value!!) }) {
-            Text("Navigate to detail view")
+            Text("Calculate dew point (log)")
         }
 
         weatherViewModel.getLocations("Berlin")
         //weatherViewModel.getFavouriteWeather(52.52437, 13.41053)
         Column {
-            Text("Sensor: ${tempData.value}")
-            Text("Sensor: ${humData.value}")
-            Text("Sensor: ${presData.value}")
+            Text("Sensor: " + String.format("%.1f", tempData.value))
+            Text("Sensor: " + String.format("%.1f", humData.value))
+            Text("Sensor: " + String.format("%.1f", presData.value))
             ShowFavourites(weatherViewModel)
             SearchLocations(weatherViewModel)
         }
