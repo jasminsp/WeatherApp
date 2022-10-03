@@ -59,6 +59,8 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             weatherViewModel = WeatherViewModel(application)
             sensorViewModel = SensorViewModel()
             val tempData = sensorViewModel.tempData.observeAsState()
+            val humData = sensorViewModel.humData.observeAsState()
+            val presData = sensorViewModel.presData.observeAsState()
 
             WeatherAppTheme {
                 // A surface container using the 'background' color from the theme
@@ -66,12 +68,15 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+                    // The sensor data could be combined into an object
                     NavHost(navController, startDestination = "main view") {
                         composable("main view") {
                             MainView(
                                 navController,
                                 weatherViewModel,
-                                tempData
+                                tempData,
+                                humData,
+                                presData
                             )
                         } // Replace with reference to official Composable
                         composable("my location") { MyLocation(navController) } // Replace with reference to official Composable
@@ -93,11 +98,11 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             sensorViewModel.setTemp(event.values[0])
         }
         if (event.sensor?.type == Sensor.TYPE_RELATIVE_HUMIDITY) {
-            // sensorViewModel.setHum(event.values[0])
+            sensorViewModel.setHum(event.values[0])
             Log.i("SENSOR_HUM", event.values[0].toString())
         }
         if (event.sensor?.type == Sensor.TYPE_PRESSURE) {
-            // sensorViewModel.setHum(event.values[0])
+            sensorViewModel.setPres(event.values[0])
             Log.i("SENSOR_PRES", event.values[0].toString())
         }
     }
@@ -143,7 +148,7 @@ fun addFavourite(viewModel: WeatherViewModel, lat: Double, long: Double) {
 
 // Mock composable, delete when real one is done
 @Composable
-fun MainView(navController: NavController, weatherViewModel: WeatherViewModel, tempData: State<Float?>) {
+fun MainView(navController: NavController, weatherViewModel: WeatherViewModel, tempData: State<Float?>, humData: State<Float?>, presData: State<Float?>) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Main view")
         Button(onClick = { navController.navigate("my location") }) {
@@ -158,6 +163,8 @@ fun MainView(navController: NavController, weatherViewModel: WeatherViewModel, t
         //weatherViewModel.getFavouriteWeather(52.52437, 13.41053)
         Column {
             Text("Sensor: ${tempData.value}")
+            Text("Sensor: ${humData.value}")
+            Text("Sensor: ${presData.value}")
             ShowFavourites(weatherViewModel)
             SearchLocations(weatherViewModel)
         }
