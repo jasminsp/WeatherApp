@@ -74,6 +74,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                             MainView(
                                 navController,
                                 weatherViewModel,
+                                sensorViewModel,
                                 tempData,
                                 humData,
                                 presData
@@ -148,7 +149,7 @@ fun addFavourite(viewModel: WeatherViewModel, lat: Double, long: Double) {
 
 // Mock composable, delete when real one is done
 @Composable
-fun MainView(navController: NavController, weatherViewModel: WeatherViewModel, tempData: State<Float?>, humData: State<Float?>, presData: State<Float?>) {
+fun MainView(navController: NavController, weatherViewModel: WeatherViewModel, sensorViewModel: SensorViewModel, tempData: State<Float?>, humData: State<Float?>, presData: State<Float?>) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Main view")
         Button(onClick = { navController.navigate("my location") }) {
@@ -156,6 +157,10 @@ fun MainView(navController: NavController, weatherViewModel: WeatherViewModel, t
         }
         Spacer(Modifier.height(8.dp))
         Button(onClick = { navController.navigate("detail view") }) {
+            Text("Navigate to detail view")
+        }
+        Spacer(Modifier.height(8.dp))
+        Button(onClick = { sensorViewModel.calculateDewPoint(tempData.value!!, humData.value!!) }) {
             Text("Navigate to detail view")
         }
 
