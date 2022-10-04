@@ -1,8 +1,10 @@
 package com.jasminsp.weatherapp
 
+import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -11,6 +13,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -30,6 +34,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -46,10 +51,25 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         private lateinit var sensorManager: SensorManager
         private var mBluetoothAdapter: BluetoothAdapter? = null
     }
+
+    private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
+    private var isBTScanPermissionGranted = false
+    private var isBTConnectPermissionGranted = false
+    private var isLocationPermissionGranted = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val mBluetoothAdapter = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        val mBluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        mBluetoothAdapter = mBluetoothManager.adapter
+        permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
+            isLocationPermissionGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: isLocationPermissionGranted
+            isBTScanPermissionGranted = permissions[Manifest.permission.BLUETOOTH_SCAN] ?: isBTScanPermissionGranted
+            isBTConnectPermissionGranted = permissions[Manifest.permission.BLUETOOTH_CONNECT] ?: isBTConnectPermissionGranted
 
+            Log.i("PERM", "")
+        }
+
+        requestPermission()
         setUpSensor()
         setContent {
             val navController = rememberNavController()
@@ -105,6 +125,38 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)?.also {
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+    }
+
+    private fun requestPermission() {
+        isLocationPermissionGranted = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        isBTScanPermissionGranted = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.BLUETOOTH_SCAN
+        ) == PackageManager.PERMISSION_GRANTED
+
+        isBTConnectPermissionGranted = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.BLUETOOTH_CONNECT
+        ) == PackageManager.PERMISSION_GRANTED
+
+        val permissionRequest: MutableList<String> = ArrayList()
+
+        if (!isLocationPermissionGranted){
+            permissionRequest.add(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+
+        if (!isBTScanPermissionGranted){
+            permissionRequest.add(Manifest.permission.BLUETOOTH_SCAN)
+        }
+
+        if (!isBTConnectPermissionGranted){
+            permissionRequest.add(Manifest.permission.BLUETOOTH_CONNECT)
+        }
+
+        if (permissionRequest.isNotEmpty()){
+            permissionLauncher.launch(permissionRequest.toTypedArray())
         }
     }
 }
