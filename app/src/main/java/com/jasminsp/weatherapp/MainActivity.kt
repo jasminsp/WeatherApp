@@ -33,6 +33,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
@@ -40,6 +41,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.jasminsp.weatherapp.sensor.BTViewModel
 import com.jasminsp.weatherapp.sensor.SensorViewModel
 import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
 import com.jasminsp.weatherapp.weather.WeatherViewModel
@@ -48,6 +50,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     companion object {
         private lateinit var weatherViewModel: WeatherViewModel
         private lateinit var sensorViewModel: SensorViewModel
+        private lateinit var btViewModel: BTViewModel
         private lateinit var sensorManager: SensorManager
         private var mBluetoothAdapter: BluetoothAdapter? = null
     }
@@ -76,6 +79,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 
             weatherViewModel = WeatherViewModel(application)
             sensorViewModel = SensorViewModel()
+            btViewModel = BTViewModel()
             sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
             val tempData = sensorViewModel.tempData.observeAsState()
 
@@ -86,7 +90,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     color = MaterialTheme.colors.background
                 ) {
                     NavHost(navController, startDestination = "main view") {
-                        composable("main view") { MainView(navController, weatherViewModel, tempData) } // Replace with reference to official Composable
+                        composable("main view") { MainView(navController, weatherViewModel, btViewModel, mBluetoothAdapter!!, tempData) } // Replace with reference to official Composable
                         composable("my location") { MyLocation(navController) } // Replace with reference to official Composable
                         composable("detail view") { DetailView(navController, tempData) } // Replace with reference to official Composable
                     }
@@ -168,7 +172,7 @@ fun addFavourite(viewModel: WeatherViewModel, lat: Double, long: Double) {
 
 // Mock composable, delete when real one is done
 @Composable
-fun MainView (navController: NavController, weatherViewModel: WeatherViewModel, tempData: State<Float?>) {
+fun MainView (navController: NavController, weatherViewModel: WeatherViewModel, btViewModel: BTViewModel, mBluetoothAdapter: BluetoothAdapter, tempData: State<Float?>) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Main view")
         Button(onClick = { navController.navigate("my location") }) {
@@ -182,7 +186,7 @@ fun MainView (navController: NavController, weatherViewModel: WeatherViewModel, 
         weatherViewModel.getLocations("Berlin")
         //weatherViewModel.getFavouriteWeather(52.52437, 13.41053)
         Column {
-            Text("Sensor: ${tempData.value}")
+            ShowBTDevices(mBluetoothAdapter, btViewModel, LocalContext.current)
             ShowFavourites(weatherViewModel)
             SearchLocations(weatherViewModel)
         }
