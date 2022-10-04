@@ -1,5 +1,7 @@
 package com.jasminsp.weatherapp
 
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -42,9 +44,12 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         private lateinit var weatherViewModel: WeatherViewModel
         private lateinit var sensorViewModel: SensorViewModel
         private lateinit var sensorManager: SensorManager
+        private var mBluetoothAdapter: BluetoothAdapter? = null
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val mBluetoothAdapter = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+
         setUpSensor()
         setContent {
             val navController = rememberNavController()
