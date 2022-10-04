@@ -89,7 +89,7 @@ fun ResultRow(result: ScanResult, viewModel: BTViewModel) {
         .clickable(
             onClick = {
                 Log.d("DBG", "Trying to connect to $result (${result.isConnectable})")
-                // viewModel.connectDevice(context, result.device)
+                viewModel.connectDevice(context, result.device)
             }
         ),
     ) {
