@@ -35,6 +35,15 @@ class BTViewModel: ViewModel() {
         val UUID_HEART_RATE_MEASUREMENT= UUID.fromString("00002A37-0000-1000-8000-00805f9b34fb")
         val UUID_HEART_RATE_SERVICE = UUID.fromString("0000180D-0000-1000-8000-00805f9b34fb")
         val UUID_CLIENT_CHARACTERISTIC_CONFIG = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
+
+        val UUID_RUUVITAG_SOME_SERVICE = UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb")
+
+        val UUID_RUUVITAG_SOME_A = UUID.fromString("00001800-0000-1000-8000-00805f9b34fb")
+        val UUID_RUUVITAG_SOME_B = UUID.fromString("00001801-0000-1000-8000-00805f9b34fb")
+        val UUID_RUUVITAG_SOME_C = UUID.fromString("0000180a-0000-1000-8000-00805f9b34fb")
+        val UUID_RUUVITAG_SOME_D = UUID.fromString("00001800-0000-1000-8000-00805f9b34fb")
+        val UUID_RUUVITAG_SOME_E = UUID.fromString("00001801-0000-1000-8000-00805f9b34fb")
+        val UUID_RUUVITAG_SOME_F = UUID.fromString("0000180a-0000-1000-8000-00805f9b34fb")
     }
 
     @SuppressLint("MissingPermission")
@@ -68,7 +77,7 @@ class BTViewModel: ViewModel() {
 
     @SuppressLint("MissingPermission")
     fun connectDevice(context: Context, device: BluetoothDevice) {
-        Log.i("DBG", "Try to connect to the address ${device.address}")
+        Log.d("DBG", "Try to connect to the address ${device.address}")
         mConnectionState.postValue(STATE_CONNECTING)
         mBluetoothGatt = device.connectGatt(context, false, mGattCallback)
     }
@@ -83,36 +92,39 @@ class BTViewModel: ViewModel() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 mConnectionState.postValue(STATE_CONNECTED)
-                Log.i("DBG", "Connected GATT service ${gatt.discoverServices()}")
+                Log.d("DBG", "Connected GATT service ${gatt.discoverServices()}")
                 //...
                 gatt.discoverServices()
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 //...
                 mConnectionState.postValue(STATE_DISCONNECTED)
                 gatt.close()
-                Log.i("DBG", "Disconnected from GATT server")
+                Log.d("DBG", "Disconnected from GATT server")
             }
         }
 
         @SuppressLint("MissingPermission")
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
+            Log.d("DBG", "onServicesDiscovered launched")
             if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.d("DBG", "GATT success!")
                 for (gattService in gatt.services) {
                     Log.d("DBG", "Service ${gattService.uuid}")
-                    if (gattService.uuid == GattAttributes.UUID_HEART_RATE_SERVICE) {
-                        Log.i("DBG", "Heart rate service found!")
+                    if (gattService.uuid == GattAttributes.UUID_RUUVITAG_SOME_A) {
+                        Log.d("DBG", "Ruuvitag A service found!")
                         for (gattCharacteristic in gattService.characteristics)
-                            Log.i("DBG", "Characteristic ${gattCharacteristic.uuid}")
+                            Log.d("DBG", "Characteristic ${gattCharacteristic.uuid}")
                         /* setup the system for the notification messages */
-                        val characteristic = gatt.getService(UUID_HEART_RATE_SERVICE) .getCharacteristic(
-                            UUID_HEART_RATE_MEASUREMENT)
+                        val characteristic = gatt.getService(UUID_RUUVITAG_SOME_A) .getCharacteristic(
+                            UUID_RUUVITAG_SOME_SERVICE)
+                        Log.d("DBG", gatt.setCharacteristicNotification(characteristic, true).toString())
                         if(gatt.setCharacteristicNotification(characteristic, true)) {
                             val descriptor = characteristic.getDescriptor(
                                 UUID_CLIENT_CHARACTERISTIC_CONFIG)
                             descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                            Log.i("DBG", "Descriptor: ${descriptor.value}")
+                            Log.d("DBG", "Descriptor: ${descriptor.value}")
                             val writing = gatt.writeDescriptor(descriptor)
-                            Log.i("DBG", "Writer: ${writing}")
+                            Log.d("DBG", "Writer: ${writing}")
 
                         }
                     }

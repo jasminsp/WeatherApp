@@ -45,13 +45,17 @@ import com.jasminsp.weatherapp.sensor.BTViewModel
 import com.jasminsp.weatherapp.sensor.SensorViewModel
 import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
 import com.jasminsp.weatherapp.weather.WeatherViewModel
+import com.ruuvi.station.bluetooth.FoundRuuviTag
+import com.ruuvi.station.bluetooth.IRuuviTagScanner
+import com.ruuvi.station.bluetooth.RuuviRangeNotifier
 
-class MainActivity : ComponentActivity(), SensorEventListener {
+class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.OnTagFoundListener {
     companion object {
         private lateinit var weatherViewModel: WeatherViewModel
         private lateinit var sensorViewModel: SensorViewModel
         private lateinit var btViewModel: BTViewModel
         private lateinit var sensorManager: SensorManager
+        private lateinit var ruuviRangeNotifier: IRuuviTagScanner
         private var mBluetoothAdapter: BluetoothAdapter? = null
     }
 
@@ -59,21 +63,25 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     private var isBTScanPermissionGranted = false
     private var isBTConnectPermissionGranted = false
     private var isLocationPermissionGranted = false
+    private var isBTAdminPermissionGranted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val mBluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        ruuviRangeNotifier = RuuviRangeNotifier(application, "MainActivity")
         mBluetoothAdapter = mBluetoothManager.adapter
         permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
             isLocationPermissionGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: isLocationPermissionGranted
             isBTScanPermissionGranted = permissions[Manifest.permission.BLUETOOTH_SCAN] ?: isBTScanPermissionGranted
             isBTConnectPermissionGranted = permissions[Manifest.permission.BLUETOOTH_CONNECT] ?: isBTConnectPermissionGranted
+            isBTAdminPermissionGranted = permissions[Manifest.permission.BLUETOOTH_ADMIN] ?: isBTAdminPermissionGranted
 
             Log.i("PERM", "")
         }
 
         requestPermission()
         setUpSensor()
+        startScanning()
         setContent {
             val navController = rememberNavController()
 
@@ -122,6 +130,17 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         super.onPause()
         // unregister the listener when activity pauses to save battery, change if want to work in background
         sensorManager.unregisterListener(this)
+        ruuviRangeNotifier.stopScanning()
+    }
+
+    fun startScanning() {
+        ruuviRangeNotifier.startScanning(this)
+    }
+
+    override fun onTagFound(tag: FoundRuuviTag) {
+        // Found tags will appear here
+        Log.d(tag.id, tag.temperature.toString())
+        Log.d(tag.id, tag.accelX.toString())
     }
 
     private fun setUpSensor() {
@@ -135,6 +154,10 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     private fun requestPermission() {
         isLocationPermissionGranted = ContextCompat.checkSelfPermission(
             this, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        isBTAdminPermissionGranted = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.BLUETOOTH_ADMIN
         ) == PackageManager.PERMISSION_GRANTED
 
         isBTScanPermissionGranted = ContextCompat.checkSelfPermission(
@@ -157,6 +180,10 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 
         if (!isBTConnectPermissionGranted){
             permissionRequest.add(Manifest.permission.BLUETOOTH_CONNECT)
+        }
+
+        if (!isBTAdminPermissionGranted){
+            permissionRequest.add(Manifest.permission.BLUETOOTH_ADMIN)
         }
 
         if (permissionRequest.isNotEmpty()){
