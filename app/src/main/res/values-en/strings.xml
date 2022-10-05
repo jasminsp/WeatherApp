@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Forecast</string>
+    <string name="placeholderSearch">Search Locations</string>
+    <string name="city">HELSINKI</string>
+    <string name="temperature">27</string>
+    <string name="time">5</string>
+    <string name="am">am</string>
+    <string name="pm">pm</string>
+    <string name="min">24</string>
+    <string name="max">29</string>
+    <string name="forecast_letters">Clear Sky</string>
+
 </resources>
