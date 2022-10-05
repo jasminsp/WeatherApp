@@ -17,9 +17,10 @@ class WeatherRepository(application: Application) {
 
     // Add data favourite to database
     suspend fun addFavourite(lat: Double, long: Double) {
-
-
-
         weatherDao.insertOrUpdate(FavouriteData(0, lat, long))
+    }
+
+    fun deleteFavourite(lat: Double, long: Double) {
+        weatherDao.deleteByLatLong(lat, long)
     }
 }

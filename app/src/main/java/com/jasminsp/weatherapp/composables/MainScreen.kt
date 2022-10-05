@@ -1,4 +1,4 @@
-package com.jasminsp.weatherapp
+package com.jasminsp.weatherapp.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,8 +13,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jasminsp.weatherapp.addFavourite
 import com.jasminsp.weatherapp.weather.WeatherViewModel
 import kotlinx.coroutines.launch
+
+@Composable
+fun SearchLocations(viewModel: WeatherViewModel) {
+    val searchInput by remember { mutableStateOf("berlin") }
+    viewModel.getLocations(searchInput)
+    ShowSearchResult(viewModel)
+}
 
 @Composable
 fun ShowFavourites(viewModel: WeatherViewModel) {
@@ -34,14 +42,6 @@ fun ShowFavourites(viewModel: WeatherViewModel) {
             }
         }
     }
-}
-
-
-@Composable
-fun SearchLocations(viewModel: WeatherViewModel) {
-    val searchInput by remember { mutableStateOf("berlin") }
-    viewModel.getLocations(searchInput)
-    ShowSearchResult(viewModel)
 }
 
 @Composable

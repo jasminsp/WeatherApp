@@ -22,6 +22,9 @@ interface WeatherDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(weatherData: FavouriteData)
 
+    @Query("DELETE FROM user_favourites WHERE latitude = :lat AND longitude = :long")
+    fun deleteByLatLong(lat: Double, long: Double)
+
     // Get all favourites from user_favourites
     @Query("SELECT * FROM user_favourites")
     fun getAllFavourites(): LiveData<List<FavouriteData>>

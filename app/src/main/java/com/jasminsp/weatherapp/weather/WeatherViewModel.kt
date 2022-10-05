@@ -69,4 +69,12 @@ class WeatherViewModel(application: Application): AndroidViewModel(application) 
             }
         }
     }
+
+    fun deleteFavourite(lat: Double, long: Double) {
+        try {
+            weatherRepository.deleteFavourite(lat, long)
+        } catch (error: Error) {
+            errorToast(error)
+        }
+    }
 }
