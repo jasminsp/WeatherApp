@@ -31,12 +31,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.jasminsp.weatherapp.R
-import com.jasminsp.weatherapp.utils.Units
-import com.jasminsp.weatherapp.utils.addFavourite
+import com.jasminsp.weatherapp.utils.*
 import com.jasminsp.weatherapp.weather.WeatherViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.jasminsp.weatherapp.web.WeatherApiService
 import kotlin.math.roundToInt
 
 @Composable
@@ -88,8 +85,7 @@ fun ShowFavourites(navController: NavController, viewModel: WeatherViewModel) {
         item {
             favourite?.forEach { favourite ->
                 Log.i("WEATHER_RESPONSE", "$favourite")
-                    FavouriteCard(navController, viewModel, favourite.current_weather.temperature, favourite.name,
-                        favourite.id)
+                    FavouriteCard(navController, viewModel, favourite)
             }
         }
     }
@@ -145,14 +141,16 @@ fun ShowSearchResult(navController: NavController, viewModel: WeatherViewModel) 
     }
 }
 
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, temperature: Double, name: String, id: Int) {
+fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, favourite: WeatherApiService.MainWeather) {
     val forecast = stringResource(R.string.forecast_letters)
     val squareSize = 150.dp
     val swipeAbleState = rememberSwipeableState(0)
     val sizePx = with(LocalDensity.current) { squareSize.toPx() }
     val anchors = mapOf(0f to 0, sizePx to 1)
+
 
     Card(modifier = Modifier
         .padding(horizontal = 30.dp, vertical = 5.dp)
@@ -183,7 +181,7 @@ fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, tem
                 ) {
                     IconButton(
                         onClick = {
-                            viewModel.deleteFavourite(id)
+                            viewModel.deleteFavourite(favourite.id)
                         },
                         modifier = Modifier
                             .size(50.dp)
@@ -215,11 +213,11 @@ fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, tem
                         painter = painterResource(R.drawable.yellowlinear), contentDescription = "")
                     Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                         Column(Modifier.padding(top = 30.dp, start = 20.dp)) {
-                            Text("$temperature${Units().temperature}",style = MaterialTheme.typography.h2, color = Color.White)
-                            Text(name, style = MaterialTheme.typography.subtitle1, color = Color.White)
+                            Text("${getCurrentTemperature(favourite)}${Units().temperature}",style = MaterialTheme.typography.h2, color = Color.White)
+                            Text(favourite.name ?: "", style = MaterialTheme.typography.subtitle1, color = Color.White)
                             Text("10:15", style = MaterialTheme.typography.body1,  color = Color.White)
-                            Text("14${Units().temperatureShort} / 20${Units().temperatureShort}", style = MaterialTheme.typography.body2, color = Color.White)
-                            Text("id: $id", style = MaterialTheme.typography.body2, color = Color.White)
+                            Text("${getMinMaxTempToday(favourite, true)}${Units().temperatureShort} / ${getMinMaxTempToday(favourite, false)}${Units().temperatureShort}", style = MaterialTheme.typography.body2, color = Color.White)
+                            Text("id: ${favourite.id}", style = MaterialTheme.typography.body2, color = Color.White)
                         }
                         Column(Modifier.padding(top = 15.dp, end = 20.dp),) {
                             Image( painter = painterResource(R.drawable.sunny), contentDescription = "")

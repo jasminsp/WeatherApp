@@ -46,12 +46,13 @@ object WeatherApiService {
     data class BaseCurrentWeather (
             val temperature: Double,
             val windspeed: Double,
-            val weathercode: Byte,
+            val weathercode: Int,
             val time: String,
         )
         data class BaseHourly (
             val time: Array<String>,
             val temperature_2m: Array<Double>,
+            val weathercode: Array<Int>
         )
         data class BaseDaily (
             val time: Array<String>,
@@ -61,11 +62,12 @@ object WeatherApiService {
             val apparent_temperature_min: Array<Double>,
             val sunrise: Array<String>,
             val sunset: Array<String>,
+            val weathercode: Array<Int>
         )
 
     // Get request to endpoint
     interface Service {
-        @GET("forecast?hourly=temperature_2m&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset&current_weather=true&timezone=auto")
+        @GET("forecast?hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,weathercode&current_weather=true&timezone=auto")
         suspend fun getHourlyWeatherWithLocation(@Query("latitude") lat: Double, @Query("longitude") long: Double): MainWeather
     }
 

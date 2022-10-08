@@ -62,9 +62,8 @@ class WeatherViewModel(application: Application): AndroidViewModel(application) 
 
     fun deleteFavourite(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
+            favouriteLocations.value?.removeIf { it.id == id }
             weatherRepository.deleteFavourite(id)
-
-            allFavourites.removeIf { it.id == id }
         }
     }
 }
