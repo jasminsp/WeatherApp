@@ -1,6 +1,7 @@
 package com.jasminsp.weatherapp.repository
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.jasminsp.weatherapp.database.FavouriteData
 import com.jasminsp.weatherapp.database.WeatherDatabase
@@ -16,11 +17,11 @@ class WeatherRepository(application: Application) {
     suspend fun getWeather(lat: Double, long: Double) = call.getHourlyWeatherWithLocation(lat, long)
 
     // Add data favourite to database
-    suspend fun addFavourite(lat: Double, long: Double) {
-        weatherDao.insertOrUpdate(FavouriteData(0, lat, long))
+    suspend fun addFavourite(id: Int, lat: Double, long: Double) {
+        weatherDao.insertOrUpdate(FavouriteData(id, lat, long))
     }
 
-    fun deleteFavourite(lat: Double, long: Double) {
-        weatherDao.deleteByLatLong(lat, long)
+    suspend fun deleteFavourite(id: Int) {
+        weatherDao.deleteByLatLong(id)
     }
 }

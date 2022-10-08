@@ -13,8 +13,11 @@ object WeatherApiService {
 
     // Storing weather info into variables before sending to database
     data class MainWeather (
+        var id: Int,
+        var name: String,
         val latitude: Double,
         val longitude: Double,
+        val utc_offset_seconds: Int,
         val timezone: String,
         val timezone_abbreviation: String,
         val current_weather: BaseCurrentWeather,

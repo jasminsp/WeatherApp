@@ -30,6 +30,9 @@ object LocationApiService {
         interface Service {
             @GET("search?")
             suspend fun getLocationsByName(@Query("name") action: String): Model.Result
+
+            @GET("get?")
+            suspend fun getLocationById(@Query("id") action: Int): Model.Location
         }
 
         // Creating retrofit
