@@ -1,7 +1,5 @@
 package com.jasminsp.weatherapp.web
 
-import androidx.room.TypeConverter
-import com.jasminsp.weatherapp.database.FavouriteData
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET

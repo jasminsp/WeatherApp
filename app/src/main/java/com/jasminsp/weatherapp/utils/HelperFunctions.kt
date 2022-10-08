@@ -1,7 +1,11 @@
 package com.jasminsp.weatherapp.utils
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import com.jasminsp.weatherapp.R
 import com.jasminsp.weatherapp.weather.WeatherViewModel
 import com.jasminsp.weatherapp.web.WeatherApiService
 import java.time.LocalDateTime
@@ -44,8 +48,13 @@ fun getMinMaxTempToday(favourite: WeatherApiService.MainWeather, returnMin: Bool
     return if (returnMin) minTempToday?.roundToInt() else maxTempToday?.roundToInt()
 }
 
+fun setGradient(color: Color): Brush {
+    return Brush.verticalGradient(listOf(Color.Transparent, color),
+        0F, 500F)
+}
+
 // Returns condition in string or the icon for it
-fun getWeatherCondition(weatherCode: Int, returnIcon: Boolean = false): Any {
+fun getWeatherCondition(weatherCode: Int, returnOption: Int): Any {
     val condition = when (weatherCode) {
         0 -> "Clear sky"
         1 -> "Mainly clear"
@@ -65,25 +74,50 @@ fun getWeatherCondition(weatherCode: Int, returnIcon: Boolean = false): Any {
     }
     // Change these mock icons to real icons
     val conditionIcon = when (condition) {
-        "Clear sky" -> Icons.Default.Star
-        "Mainly clear" -> Icons.Default.Star
-        "Partly cloudy" -> Icons.Default.Star
-        "Overcast"  -> Icons.Default.Star
-        "Fog" -> Icons.Default.Star
-        "Drizzle" -> Icons.Default.Star
-        "Rain" -> Icons.Default.Star
-        "Freezing rain" -> Icons.Default.Star
-        "Snow" -> Icons.Default.Star
-        "Snow grains" -> Icons.Default.Star
-        "Rain showers" -> Icons.Default.Star
-        "Snow showers"  -> Icons.Default.Star
-        "Thunderstorm" -> Icons.Default.Star
-        "Thunderstorm with hail" -> Icons.Default.Star
+        "Clear sky" -> R.drawable.sunny
+        "Mainly clear" -> R.drawable.sunny
+        "Partly cloudy" -> R.drawable.sunny
+        "Overcast"  -> R.drawable.sunny
+        "Fog" -> R.drawable.sunny
+        "Drizzle" -> R.drawable.sunny
+        "Rain" -> R.drawable.sunny
+        "Freezing rain" -> R.drawable.sunny
+        "Snow" -> R.drawable.sunny
+        "Snow grains" -> R.drawable.sunny
+        "Rain showers" -> R.drawable.sunny
+        "Snow showers"  -> R.drawable.sunny
+        "Thunderstorm" -> R.drawable.sunny
+        "Thunderstorm with hail" -> R.drawable.sunny
         else -> {
-            Icons.Default.Star
+            R.drawable.sunny
         }
     }
-    return if (returnIcon) conditionIcon else condition
+
+    val gradient = when (weatherCode) {
+        0 -> setGradient(Color.Yellow)
+        1 -> setGradient(Color.Yellow)
+        2 -> setGradient(Color.White)
+        3 -> setGradient(Color.Gray)
+        in 45..48 -> setGradient(Color.Gray)
+        in 51..55 -> setGradient(Color.Gray)
+        in 61..65 -> setGradient(Color.Gray)
+        in 65..66 -> setGradient(Color.Blue)
+        in 71..75 -> setGradient(Color.Gray)
+        77 -> setGradient(Color.Gray)
+        in 80..82 -> setGradient(Color.Gray)
+        in 85..86 -> setGradient(Color.Gray)
+        95 -> setGradient(Color.Gray)
+        in 96..99 -> setGradient(Color.Gray)
+        else -> {setGradient(Color.Blue)}
+    }
+
+    val data = when (returnOption) {
+        0 -> condition
+        1 -> conditionIcon
+        2 -> gradient
+        else -> {condition}
+    }
+    return data
 }
 
 fun getCurrentTemperature(favourite: WeatherApiService.MainWeather): Int {

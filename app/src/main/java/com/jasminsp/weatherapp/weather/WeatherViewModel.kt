@@ -16,7 +16,7 @@ class WeatherViewModel(application: Application): AndroidViewModel(application) 
     val searchedLocations = MutableLiveData<LocationApiService.Model.Result>()
     val favouriteLocations = MutableLiveData<MutableSet<WeatherApiService.MainWeather>>()
     // Used to store favourite data temporarily before sending to favouriteLocations
-    var allFavourites = mutableSetOf<WeatherApiService.MainWeather>()
+    private var allFavourites = mutableSetOf<WeatherApiService.MainWeather>()
 
     // Get favourite data from database saved latitude and longitude
     var favouritesFromDb: LiveData<List<FavouriteData>> = weatherRepository.getFavouriteData()
