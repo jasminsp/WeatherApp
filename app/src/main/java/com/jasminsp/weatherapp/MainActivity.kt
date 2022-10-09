@@ -7,13 +7,13 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Column
@@ -27,7 +27,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
@@ -52,9 +51,6 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
         private var isBTConnectPermissionGranted = false
         private var isLocationPermissionGranted = false
         private var isBTAdminPermissionGranted = false
-        lateinit var sensorAmbTemp: Sensor
-        lateinit var sensorRelHum: Sensor
-        lateinit var sensorAmbPres: Sensor
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,10 +75,6 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
             val tempData = sensorViewModel.tempData.observeAsState()
             val humData = sensorViewModel.humData.observeAsState()
             val presData = sensorViewModel.presData.observeAsState()
-
-            val tempDataTag = sensorViewModel.tempDataTag.observeAsState()
-            val humDataTag = sensorViewModel.humDataTag.observeAsState()
-            val presDataTag = sensorViewModel.presDataTag.observeAsState()
 
             WeatherAppTheme {
                 // A surface container using the 'background' color from the theme
@@ -166,11 +158,7 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
         val sensorAmbTemp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
         val sensorRelHum = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY)
         val sensorAmbPres = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
-        /*
-        sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)?.also {
-            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_NORMAL)
-        }
-         */
+
         sensorAmbTemp.also {
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_NORMAL)
         }
@@ -191,13 +179,17 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
             this, Manifest.permission.BLUETOOTH_ADMIN
         ) == PackageManager.PERMISSION_GRANTED
 
-        isBTScanPermissionGranted = ContextCompat.checkSelfPermission(
-            this, Manifest.permission.BLUETOOTH_SCAN
-        ) == PackageManager.PERMISSION_GRANTED
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            isBTScanPermissionGranted = ContextCompat.checkSelfPermission(
+                this, Manifest.permission.BLUETOOTH_SCAN
+            ) == PackageManager.PERMISSION_GRANTED
+        }
 
-        isBTConnectPermissionGranted = ContextCompat.checkSelfPermission(
-            this, Manifest.permission.BLUETOOTH_CONNECT
-        ) == PackageManager.PERMISSION_GRANTED
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            isBTConnectPermissionGranted = ContextCompat.checkSelfPermission(
+                this, Manifest.permission.BLUETOOTH_CONNECT
+            ) == PackageManager.PERMISSION_GRANTED
+        }
 
         val permissionRequest: MutableList<String> = ArrayList()
 
@@ -206,11 +198,15 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
         }
 
         if (!isBTScanPermissionGranted){
-            permissionRequest.add(Manifest.permission.BLUETOOTH_SCAN)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                permissionRequest.add(Manifest.permission.BLUETOOTH_SCAN)
+            }
         }
 
         if (!isBTConnectPermissionGranted){
-            permissionRequest.add(Manifest.permission.BLUETOOTH_CONNECT)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                permissionRequest.add(Manifest.permission.BLUETOOTH_CONNECT)
+            }
         }
 
         if (!isBTAdminPermissionGranted){
@@ -250,17 +246,6 @@ fun MainView(navController: NavController, weatherViewModel: WeatherViewModel, s
         Column {
             ShowFavourites(weatherViewModel)
             SearchLocations(weatherViewModel)
-        }
-    }
-}
-
-// Mock composable, delete when real one is done
-@Composable
-fun MyLocation(navController: NavController) {
-    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("My Location")
-        Button(onClick = { navController.navigateUp() }) {
-            Text("Back to Main View")
         }
     }
 }
