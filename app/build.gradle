@@ -84,4 +84,7 @@ dependencies {
     // Ruuvi libraries
     implementation 'com.github.ruuvi:com.ruuvi.bluetooth:2cedd919b2'
     implementation 'com.github.ruuvi:com.ruuvi.bluetooth.default:31e717b'
+
+    // Chart libraries
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

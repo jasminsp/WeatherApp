@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 
 class SensorViewModel : ViewModel() {
     // variables to store data from internal sensors
-    var tempData = MutableLiveData(0f)
-    var humData = MutableLiveData(0f)
+    var tempData = MutableLiveData(14f)
+    var humData = MutableLiveData(80f)
     var presData = MutableLiveData(0f)
 
     //variables to store data from a RuuviTag
