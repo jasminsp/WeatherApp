@@ -1,6 +1,5 @@
 package com.jasminsp.weatherapp.weather
 
-import android.app.Application
 import androidx.lifecycle.*
 import com.jasminsp.weatherapp.database.FavouriteData
 import com.jasminsp.weatherapp.repository.LocationRepository
@@ -10,27 +9,26 @@ import com.jasminsp.weatherapp.web.LocationApiService
 import com.jasminsp.weatherapp.web.WeatherApiService
 import kotlinx.coroutines.*
 
-class WeatherViewModel(application: Application): AndroidViewModel(application) {
+class WeatherViewModel: ViewModel() {
     private val locationRepository = LocationRepository()
-    private val weatherRepository = WeatherRepository(application)
+    private val weatherRepository = WeatherRepository
     val searchedLocations = MutableLiveData<LocationApiService.Model.Result>()
     val favouriteLocations = MutableLiveData<MutableSet<WeatherApiService.MainWeather>>()
-    // Used to store favourite data temporarily before sending to favouriteLocations
     private var allFavourites = mutableSetOf<WeatherApiService.MainWeather>()
 
     // Get favourite data from database saved latitude and longitude
-    var favouritesFromDb: LiveData<List<FavouriteData>> = weatherRepository.getFavouriteData()
+    var favouritesFromDb: LiveData<List<FavouriteData>> = weatherRepository.favouriteData
 
     // Fetch location from LocationRepository by searched location name
     fun getLocations(name: String) {
         viewModelScope.launch(Dispatchers.IO) {
                 val serverResp = locationRepository.getLocations(name)
-
                 // Save data to variable as livedata
                 searchedLocations.postValue(serverResp)
         }
     }
 
+    // Get location name by lat and long
     private suspend fun getLocationNameById(id: Int): String = withContext(Dispatchers.IO) {
         return@withContext locationRepository.getLocationById(id).name
     }
@@ -60,6 +58,7 @@ class WeatherViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
+    // delete favourite from database
     fun deleteFavourite(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             favouriteLocations.value?.removeIf { it.id == id }

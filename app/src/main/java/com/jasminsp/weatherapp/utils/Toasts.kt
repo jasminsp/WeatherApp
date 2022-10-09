@@ -1,11 +1,11 @@
 package com.jasminsp.weatherapp.utils
 
+import android.app.Application
 import android.widget.Toast
-import com.jasminsp.weatherapp.App
 
-    // For showing toast after error occured
+// For showing toast after error occured
     fun errorToast(error: Error) {
         Toast.makeText(
-            App.appContext, "$error",
+            Application().applicationContext, "$error",
             Toast.LENGTH_LONG).show()
     }

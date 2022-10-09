@@ -20,19 +20,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.jasminsp.weatherapp.R
 import com.jasminsp.weatherapp.utils.*
+import com.jasminsp.weatherapp.utils.helpers.*
 import com.jasminsp.weatherapp.weather.WeatherViewModel
 import com.jasminsp.weatherapp.web.WeatherApiService
 import kotlin.math.roundToInt
@@ -146,7 +145,6 @@ fun ShowSearchResult(navController: NavController, viewModel: WeatherViewModel) 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, favourite: WeatherApiService.MainWeather) {
-    val forecast = stringResource(R.string.forecast_letters)
     val squareSize = 150.dp
     val swipeAbleState = rememberSwipeableState(0)
     val sizePx = with(LocalDensity.current) { squareSize.toPx() }
@@ -210,18 +208,18 @@ fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, fav
                         contentScale = ContentScale.Crop,
                         painter = painterResource(R.drawable.helsinki_ican), contentDescription = "Helsinki" )
                     Column(Modifier.fillMaxSize().background(
-                        setGradient(Color.Blue)
+                        setGradient(getWeatherCondition(favourite.current_weather.weathercode, 2) as Color)
                     )) {
                         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                             Column(Modifier.padding(top = 30.dp, start = 20.dp)) {
                                 Text("${getCurrentTemperature(favourite)}${Units().temperature}",style = MaterialTheme.typography.h2, color = Color.White)
                                 Text(favourite.name ?: "", style = MaterialTheme.typography.subtitle1, color = Color.White)
-                                Text("10:15", style = MaterialTheme.typography.body1,  color = Color.White)
+                                Text(getTimeNow(), style = MaterialTheme.typography.body1,  color = Color.White)
                             }
                             Column(Modifier.padding(top = 15.dp, end = 20.dp), horizontalAlignment = Alignment.End) {
                                 Image( painter = painterResource(getWeatherCondition(1, 1) as Int), contentDescription = "")
-                                Text(forecast, style = MaterialTheme.typography.body1, color = Color.White)
-                                Text("${getMinMaxTempToday(favourite, true)}${Units().temperatureShort} / ${getMinMaxTempToday(favourite, false)}${Units().temperatureShort}", style = MaterialTheme.typography.body2, color = Color.White)
+                                Text("${getWeatherCondition(favourite.current_weather.weathercode, 0)}", style = MaterialTheme.typography.body1, color = Color.White)
+                                Text("${getMinMaxTempToday(favourite, true)}${Units().temperatureShort} | ${getMinMaxTempToday(favourite, false)}${Units().temperatureShort}", style = MaterialTheme.typography.body2, color = Color.White)
                             }
                         }
                     }

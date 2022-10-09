@@ -19,7 +19,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,6 +27,7 @@ import com.jasminsp.weatherapp.composables.*
 import com.jasminsp.weatherapp.sensor.SensorViewModel
 import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
 import com.jasminsp.weatherapp.weather.WeatherViewModel
+import com.jasminsp.weatherapp.worker.WorkManagerScheduler
 
 class MainActivity : ComponentActivity(), SensorEventListener {
     companion object {
@@ -42,12 +42,14 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        App.appContext = applicationContext
+        WorkManagerScheduler.refreshPeriodicWork(this)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
         setUpSensor()
         setContent {
             val navController = rememberNavController()
-            weatherViewModel = WeatherViewModel(application)
+            weatherViewModel = WeatherViewModel()
             sensorViewModel = SensorViewModel()
             val tempData = sensorViewModel.tempData.observeAsState()
             val humData = sensorViewModel.humData.observeAsState()
