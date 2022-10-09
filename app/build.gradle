@@ -81,6 +81,10 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
+    // Ruuvi libraries
+    implementation 'com.github.ruuvi:com.ruuvi.bluetooth:2cedd919b2'
+    implementation 'com.github.ruuvi:com.ruuvi.bluetooth.default:31e717b'
+
     // lifecycleScope:
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha04'
 
