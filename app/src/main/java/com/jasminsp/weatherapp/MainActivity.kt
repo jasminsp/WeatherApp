@@ -141,16 +141,20 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
 
     override fun onTagFound(tag: FoundRuuviTag) {
         // Log info on found RuuviTags
-        Log.d("RUUVI", tag.temperature.toString())
-        Log.d("RUUVI", tag.humidity.toString())
-        Log.d("RUUVI", tag.pressure.toString())
-
-        // TODO: Add logic for humidity sensor returning null
+        //Log.d("RUUVI", tag.temperature.toString())
+        //Log.d("RUUVI", tag.humidity.toString())
+        //Log.d("RUUVI", tag.pressure.toString())
 
         // Update ruuvitag info in SensorViewModel
-        sensorViewModel.tempDataTag.value = tag.temperature?.toFloat()
-        sensorViewModel.humDataTag.value = tag.humidity?.toFloat()
-        sensorViewModel.humDataTag.value = tag.humidity?.toFloat()
+        if (tag.temperature != null) {
+            sensorViewModel.tempDataTag.value = tag.temperature?.toFloat()
+        }
+        if (tag.humidity != null) {
+            sensorViewModel.humDataTag.value = tag.humidity?.toFloat()
+        }
+        if (tag.pressure != null) {
+            sensorViewModel.presDataTag.value = tag.pressure?.toFloat()
+            }
     }
 
     private fun setUpSensor() {
