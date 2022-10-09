@@ -1,34 +1,30 @@
 package com.jasminsp.weatherapp
 
 import android.content.Context
-import android.util.AttributeSet
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.charts.BarLineChartBase
 import com.github.mikephil.charting.charts.CombinedChart
-import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.*
 import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
 
 @Composable
 fun ShowGraph() {
-    val bpmList = listOf(30,40,35,25,22)
-    val dayList = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
+    val tempList = listOf(30,40,35,25,22,24,44)
+    val humList = listOf(30, 50, 70, 65, 45, 29, 47)
     val entries: MutableList<Entry> = mutableListOf()
-    val barList: MutableList<BarEntry> = mutableListOf(BarEntry(0.5f, 3f), BarEntry( 1.5f,5f), BarEntry(2.5f, 1f), BarEntry(3.5f, 2f), BarEntry(4.5f, 9f))
+    val barList: MutableList<BarEntry> = mutableListOf()
 
-    bpmList.forEachIndexed { index, bpm ->
-        entries.add(Entry((0.5 + index).toFloat(), bpm.toFloat()))
+    tempList.forEachIndexed { index, value ->
+        entries.add(Entry((index + 0.5f), value.toFloat()))
+    }
+
+    humList.forEachIndexed { index, value ->
+        barList.add(BarEntry((index + 0.5f), value.toFloat()))
     }
 
     Column(
@@ -48,13 +44,29 @@ fun ShowGraph() {
                 humData.color = R.color.black
                 val temperature = LineData(tempData)
                 val humidity = BarData(humData)
+                humidity.barWidth = 0.5f
                 data.setData(temperature)
                 data.setData(humidity)
                 val desc = Description()
-                desc.text = "Beats Per Minute"
-                view.description = desc
-                view.data = data
+                desc.isEnabled = false
 
+                val xAxis = view.xAxis
+                val yAxis = view.axisLeft
+                yAxis.setDrawGridLines(false)
+                yAxis.setLabelCount(5, true)
+                view.axisLeft.setDrawLabels(false);
+                view.axisRight.setDrawLabels(false);
+                view.xAxis.setDrawLabels(false);
+                view.axisLeft.setDrawGridLines(false);
+                view.axisRight.setDrawGridLines(false);
+                view.xAxis.setDrawGridLines(false);
+                xAxis.axisMinimum = 0f
+                xAxis.axisMaximum = 7f
+                view.x = 7f
+                view.y = 7f
+                view.setTouchEnabled(false)
+                view.data = data
+                view.description = desc
                       view// return the view
             },
             update = { view ->
@@ -62,6 +74,15 @@ fun ShowGraph() {
                 view.invalidate()
             }
         )
+    }
+}
+
+@Composable
+fun GraphView(){
+    Column(modifier = Modifier
+        .height(200.dp)
+        .width(200.dp)) {
+        ShowGraph()
     }
 }
 

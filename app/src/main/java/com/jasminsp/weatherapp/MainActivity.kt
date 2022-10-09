@@ -80,6 +80,10 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
             val humData = sensorViewModel.humData.observeAsState()
             val presData = sensorViewModel.presData.observeAsState()
 
+            val tempDataTag = sensorViewModel.tempDataTag.observeAsState()
+            val humDataTag = sensorViewModel.humDataTag.observeAsState()
+            val presDataTag = sensorViewModel.presDataTag.observeAsState()
+
             WeatherAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -98,7 +102,7 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
                                 presData
                             )
                         } // Replace with reference to official Composable
-                        composable("my location") { MyLocation(navController) } // Replace with reference to official Composable
+                        composable("my location") { GraphView() } // Replace with reference to official Composable
                         composable("detail view") { DetailView(navController, tempData) } // Replace with reference to official Composable
                     }
                 }
@@ -115,21 +119,19 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
         // TODO: update an observed variable when the received sensor value changes
         if (event.sensor?.type == Sensor.TYPE_AMBIENT_TEMPERATURE) {
             sensorViewModel.setTemp(event.values[0])
-            Log.i("SENSOR_TEMP", event.values[0].toString())
         }
         if (event.sensor?.type == Sensor.TYPE_RELATIVE_HUMIDITY) {
             sensorViewModel.setHum(event.values[0])
-            Log.i("SENSOR_HUM", event.values[0].toString())
         }
         if (event.sensor?.type == Sensor.TYPE_PRESSURE) {
             sensorViewModel.setPres(event.values[0])
-            Log.i("SENSOR_PRES", event.values[0].toString())
         }
     }
 
     override fun onResume() {
         // Register a listener for the sensor.
         setUpSensor()
+        startScanning()
         super.onResume()
     }
 
@@ -147,13 +149,15 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
 
     override fun onTagFound(tag: FoundRuuviTag) {
         // Log info on found RuuviTags
-        Log.d(tag.id, tag.temperature.toString())
-        Log.d(tag.id, tag.accelX.toString())
+        Log.d("RUUVI", tag.temperature.toString())
+        Log.d("RUUVI", tag.humidity.toString())
+        Log.d("RUUVI", tag.pressure.toString())
 
         // TODO: Add logic for humidity sensor returning null
 
         // Update ruuvitag info in SensorViewModel
         sensorViewModel.tempDataTag.value = tag.temperature?.toFloat()
+        sensorViewModel.humDataTag.value = tag.humidity?.toFloat()
         sensorViewModel.humDataTag.value = tag.humidity?.toFloat()
     }
 
