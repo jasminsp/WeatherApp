@@ -6,4 +6,23 @@
     <string name="max">29</string>
     <string name="min">24</string>
     <string name="city">HELSINKI</string>
+
+    <string name="wind">Tuuli</string>
+    <string name="meters_second">m/s</string>
+    <string name="humidity">Kosteus</string>
+    <string name="percent">%</string>
+    <string name="mm">mm</string>
+    <string name="rain">Sade</string>
+    <string name="uv">UV</string>
+    <string name="sunrise">Aurinko nousee</string>
+    <string name="sunrisetime">07:00</string>
+    <string name="sunset">Aurinko laskee</string>
+    <string name="sunsettime">22:00</string>
+    <string name="high">High</string>
+    <string name="low">Low</string>
+    <string name="weekday">Maanantai</string>
+
+    <string name="today">TÄNÄÄN</string>
+    <string name="yourlocation">SIJAINTISI</string>
+
 </resources>
