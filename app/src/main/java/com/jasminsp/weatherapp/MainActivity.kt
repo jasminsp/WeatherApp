@@ -33,6 +33,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.jasminsp.weatherapp.location.LocationHandler
+import com.jasminsp.weatherapp.location.LocationViewModel
 import com.jasminsp.weatherapp.sensor.SensorViewModel
 import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
 import com.jasminsp.weatherapp.weather.WeatherViewModel
@@ -44,6 +47,7 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
     companion object {
         private lateinit var weatherViewModel: WeatherViewModel
         private lateinit var sensorViewModel: SensorViewModel
+        private lateinit var locationViewModel: LocationViewModel
         private lateinit var sensorManager: SensorManager
         private lateinit var ruuviRangeNotifier: IRuuviTagScanner
         private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
@@ -53,8 +57,12 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
         private var isBTAdminPermissionGranted = false
     }
 
+    // placed outside companion object to avoid memory leak
+    private lateinit var locationHandler: LocationHandler
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         ruuviRangeNotifier = RuuviRangeNotifier(application, "MainActivity")
         permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
@@ -63,15 +71,20 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
             isBTConnectPermissionGranted = permissions[Manifest.permission.BLUETOOTH_CONNECT] ?: isBTConnectPermissionGranted
             isBTAdminPermissionGranted = permissions[Manifest.permission.BLUETOOTH_ADMIN] ?: isBTAdminPermissionGranted
         }
-        
+
+        locationViewModel = LocationViewModel()
+        locationHandler = LocationHandler(applicationContext, locationViewModel)
+
         requestPermission()
         setUpSensor()
         startScanning()
+        locationHandler.getMyLocation()
         setContent {
             val navController = rememberNavController()
 
             weatherViewModel = WeatherViewModel(application)
             sensorViewModel = SensorViewModel()
+
             val tempData = sensorViewModel.tempData.observeAsState()
             val humData = sensorViewModel.humData.observeAsState()
             val presData = sensorViewModel.presData.observeAsState()

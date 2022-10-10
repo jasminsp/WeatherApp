@@ -87,4 +87,7 @@ dependencies {
 
     // Chart libraries
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // User location
+    implementation 'com.google.android.gms:play-services-location:20.0.0'
 }
