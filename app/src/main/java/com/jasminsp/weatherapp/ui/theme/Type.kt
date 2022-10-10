@@ -25,12 +25,27 @@ val Typography = Typography(
     h2 = TextStyle(
         fontFamily = OxygenFamily,
         fontWeight = FontWeight.Bold,
-        fontSize = 48.sp,
+        fontSize = 52.sp,
     ),
     h1 = TextStyle(
         fontFamily = OxygenFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 36.sp,
+    ),
+    h3 = TextStyle(
+        fontFamily = OxygenFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 25.sp,
+    ),
+    h5 = TextStyle(
+        fontFamily = OxygenFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 20.sp,
+    ),
+    h4 = TextStyle(
+        fontFamily = OxygenFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
     ),
     subtitle1 = TextStyle(
         fontFamily = OxygenFamily,
@@ -43,12 +58,12 @@ val Typography = Typography(
         fontSize = 20.sp,
     ),
     body1 = TextStyle(
-        fontFamily = NotoFamily,
+        fontFamily = OxygenFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
     ),
     body2 = TextStyle(
-        fontFamily = NotoFamily,
+        fontFamily = OxygenFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 15.sp),
 
