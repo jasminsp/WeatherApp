@@ -85,6 +85,12 @@ dependencies {
     implementation 'com.github.ruuvi:com.ruuvi.bluetooth:2cedd919b2'
     implementation 'com.github.ruuvi:com.ruuvi.bluetooth.default:31e717b'
 
+    // Chart libraries
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // User location
+    implementation 'com.google.android.gms:play-services-location:20.0.0'
+
     // lifecycleScope:
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha04'
 

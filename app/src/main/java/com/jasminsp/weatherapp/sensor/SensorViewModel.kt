@@ -13,6 +13,7 @@ class SensorViewModel : ViewModel() {
     //variables to store data from a RuuviTag
     var tempDataTag = MutableLiveData(0f)
     var humDataTag = MutableLiveData(0f)
+    var presDataTag = MutableLiveData(0f)
 
     var dewPoint = calculateDewPoint(tempData.value!!, humData.value!!)
 
