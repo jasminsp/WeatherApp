@@ -55,7 +55,7 @@ fun DetailCard(){
                 Row(modifier = Modifier.padding(top = 20.dp, start = 20.dp)
                    .fillMaxWidth(0.6f) , verticalAlignment = Alignment.CenterVertically) {
                     Text(weekday+ "   ")
-                    Icon(painter = painterResource(com.jasminsp.weatherapp.R.drawable.cloudy),modifier = Modifier.requiredWidth(60.dp).padding(start = 1.dp), contentDescription ="" )
+                    Icon(painter = painterResource(com.jasminsp.weatherapp.R.drawable.cloudy_icon),modifier = Modifier.requiredWidth(60.dp).padding(start = 1.dp), contentDescription ="" )
                 }
                 Column(modifier = Modifier
                     .padding(top = 20.dp, end = 20.dp)

@@ -103,19 +103,19 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
     }
 
     override fun onSensorChanged(event: SensorEvent) {
-        // TODO: update an observed variable when the received sensor value changes
-        if (event.sensor?.type == Sensor.TYPE_AMBIENT_TEMPERATURE) {
-            sensorViewModel.setTemp(event.values[0])
-            Log.i("SENSOR_TEMP", event.values[0].toString())
-        }
-        if (event.sensor?.type == Sensor.TYPE_RELATIVE_HUMIDITY) {
-            sensorViewModel.setHum(event.values[0])
-            Log.i("SENSOR_HUM", event.values[0].toString())
-        }
-        if (event.sensor?.type == Sensor.TYPE_PRESSURE) {
-            sensorViewModel.setPres(event.values[0])
-            Log.i("SENSOR_PRES", event.values[0].toString())
-        }
+//        // TODO: update an observed variable when the received sensor value changes
+//        if (event.sensor?.type == Sensor.TYPE_AMBIENT_TEMPERATURE) {
+//            sensorViewModel.setTemp(event.values[0])
+//            Log.i("SENSOR_TEMP", event.values[0].toString())
+//        }
+//        if (event.sensor?.type == Sensor.TYPE_RELATIVE_HUMIDITY) {
+//            sensorViewModel.setHum(event.values[0])
+//            Log.i("SENSOR_HUM", event.values[0].toString())
+//        }
+//        if (event.sensor?.type == Sensor.TYPE_PRESSURE) {
+//            sensorViewModel.setPres(event.values[0])
+//            Log.i("SENSOR_PRES", event.values[0].toString())
+//        }
     }
 
     override fun onResume() {

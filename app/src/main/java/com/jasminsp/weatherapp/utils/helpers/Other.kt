@@ -11,5 +11,5 @@ fun addFavourite(viewModel: WeatherViewModel, id: Int, lat: Double, long: Double
 
 fun setGradient(color: Color): Brush {
     return Brush.verticalGradient(listOf(Color.Transparent, color),
-        0F, 500F)
+        0F, 1000F)
 }
