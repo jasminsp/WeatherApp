@@ -74,6 +74,7 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
         }
 
         locationViewModel = LocationViewModel()
+        sensorViewModel = SensorViewModel()
         locationHandler = LocationHandler(applicationContext, locationViewModel)
 
         requestPermission()
@@ -83,7 +84,6 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
         setContent {
             val navController = rememberNavController()
             weatherViewModel = WeatherViewModel()
-            sensorViewModel = SensorViewModel()
 
             val tempData = sensorViewModel.tempData.observeAsState()
             val humData = sensorViewModel.humData.observeAsState()
