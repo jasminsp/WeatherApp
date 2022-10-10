@@ -90,4 +90,10 @@ dependencies {
 
     // User location
     implementation 'com.google.android.gms:play-services-location:20.0.0'
+
+    // lifecycleScope:
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha04'
+
+    // WorkManager dependency
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
 }
