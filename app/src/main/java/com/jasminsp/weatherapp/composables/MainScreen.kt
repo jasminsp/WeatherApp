@@ -206,9 +206,9 @@ fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, fav
 
                     Image(modifier = Modifier.fillMaxWidth(),
                         contentScale = ContentScale.Crop,
-                        painter = painterResource(R.drawable.helsinki_ican), contentDescription = "Helsinki" )
+                        painter = painterResource(getWeatherCondition(favourite.current_weather.weathercode, 2) as Int), contentDescription = "Helsinki" )
                     Column(Modifier.fillMaxSize().background(
-                        setGradient(getWeatherCondition(favourite.current_weather.weathercode, 2) as Color)
+                        setGradient(Color.LightGray)
                     )) {
                         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                             Column(Modifier.padding(top = 30.dp, start = 20.dp)) {
@@ -217,7 +217,7 @@ fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, fav
                                 Text(getTimeNow(), style = MaterialTheme.typography.body1,  color = Color.White)
                             }
                             Column(Modifier.padding(top = 15.dp, end = 20.dp), horizontalAlignment = Alignment.End) {
-                                Image( painter = painterResource(getWeatherCondition(1, 1) as Int), contentDescription = "")
+                                Image( painter = painterResource(getWeatherCondition(favourite.current_weather.weathercode, 1) as Int), contentDescription = "")
                                 Text("${getWeatherCondition(favourite.current_weather.weathercode, 0)}", style = MaterialTheme.typography.body1, color = Color.White)
                                 Text("${getMinMaxTempToday(favourite, true)}${Units().temperatureShort} | ${getMinMaxTempToday(favourite, false)}${Units().temperatureShort}", style = MaterialTheme.typography.body2, color = Color.White)
                             }

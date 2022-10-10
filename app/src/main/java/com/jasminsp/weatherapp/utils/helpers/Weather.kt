@@ -47,48 +47,49 @@ fun getWeatherCondition(weatherCode: Int, returnOption: Int): Any {
     }
     // Change these mock icons to real icons
     val conditionIcon = when (condition) {
-        "Clear sky" -> R.drawable.sunny
-        "Mainly clear" -> R.drawable.sunny
-        "Partly cloudy" -> R.drawable.sunny
-        "Overcast"  -> R.drawable.sunny
-        "Fog" -> R.drawable.sunny
-        "Drizzle" -> R.drawable.sunny
-        "Rain" -> R.drawable.sunny
-        "Freezing rain" -> R.drawable.sunny
-        "Snow" -> R.drawable.sunny
-        "Snow grains" -> R.drawable.sunny
-        "Rain showers" -> R.drawable.sunny
-        "Snow showers"  -> R.drawable.sunny
-        "Thunderstorm" -> R.drawable.sunny
-        "Thunderstorm with hail" -> R.drawable.sunny
+        "Clear sky" -> R.drawable.clear_icon
+        "Mainly clear" -> R.drawable.clear_icon
+        "Partly cloudy" -> R.drawable.cloudy_icon
+        "Overcast"  -> R.drawable.cloudy_icon
+        "Fog" -> R.drawable.cloudy_icon
+        "Drizzle" -> R.drawable.rainy_icon
+        "Rain" -> R.drawable.rainy_icon
+        "Freezing rain" -> R.drawable.rainy_icon
+        "Snow" -> R.drawable.snowy_icon
+        "Snow grains" -> R.drawable.snowy_icon
+        "Rain showers" -> R.drawable.rainy_icon
+        "Snow showers"  -> R.drawable.snowy_icon
+        "Thunderstorm" -> R.drawable.stormy_icon
+        "Thunderstorm with hail" -> R.drawable.stormy_icon
         else -> {
-            R.drawable.sunny
+            R.drawable.clear_icon
         }
     }
 
-    val gradientColor = when (weatherCode) {
-        0 -> Color.Yellow
-        1 -> Color.Blue
-        2 -> Color.Yellow
-        3 -> Color.Gray
-        in 45..48 -> Color.Yellow
-        in 51..55 -> Color.Yellow
-        in 61..65 -> Color.LightGray
-        in 65..66 -> Color.Yellow
-        in 71..75 -> Color.Yellow
-        77 -> Color.Yellow
-        in 80..82 -> Color.Yellow
-        in 85..86 -> Color.Yellow
-        95 -> Color.Yellow
-        in 96..99 -> Color.Yellow
+    val backgroundImage = when (condition) {
+        "Clear sky" -> R.mipmap.clear_illu2
+        "Mainly clear" -> R.mipmap.misty_illu
+        "Partly cloudy" -> R.mipmap.cloudy_illu2
+        "Overcast"  -> R.mipmap.cloudy_illu
+        "Fog" -> R.mipmap.foggy_illu
+        "Drizzle" -> R.mipmap.rainy_illu
+        "Rain" -> R.mipmap.rainy_illu
+        "Freezing rain" -> R.drawable.rainy_icon
+        "Snow" -> R.mipmap.snowy_illu
+        "Snow grains" -> R.mipmap.snowy_illu
+        "Rain showers" -> R.mipmap.rainy_illu
+        "Snow showers"  -> R.mipmap.snowy_illu
+        "Thunderstorm" -> R.mipmap.windy_illu
+        "Thunderstorm with hail" -> R.mipmap.stormy_illu
         else -> {
-            Color.Yellow}
+            R.mipmap.clear_illu
+        }
     }
 
     val data = when (returnOption) {
         0 -> condition
         1 -> conditionIcon
-        2 -> gradientColor
+        2 -> backgroundImage
         else -> {condition}
     }
     return data

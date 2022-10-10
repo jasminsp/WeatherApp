@@ -3,6 +3,45 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/asset_3_100 2.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/chanceflurries.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/chancerain.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/chancesleet.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/chancetstorms.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/clear.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/clear_icon.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/cloudy.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/cloudy_icon.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_app_logo.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_app_logo_background.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/nt_chanceflurries.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/nt_chancerain.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/nt_chancesleet.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/nt_chancetstorms.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/nt_clear.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/nt_cloudy.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/nt_partlycloudy.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/nt_partlysunny.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/nt_rain.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/nt_sleet.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/nt_tstorms.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/rain.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/rainy_icon.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/sleet.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/sleet_1.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/snowy_icon.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/stormy_icon.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/tstorms.xml" value="0.1" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_app_logo.xml" value="0.1" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_app_logo_round.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
         <entry key="../../../../../layout/compose-model-1665383548885.xml" value="0.1" />
         <entry key="../../../../../layout/compose-model-1665383690556.xml" value="0.1" />
       </map>
