@@ -21,7 +21,7 @@ import androidx.compose.material.Icon as Icon
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TwelweHours() {
+fun TodayWithLazyGrid() {
     val city = stringResource(R.string.city)
     val bigtemperature = 27
     val yourlocation = stringResource(R.string.yourlocation)

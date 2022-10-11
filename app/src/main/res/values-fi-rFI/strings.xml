@@ -27,5 +27,10 @@
     <string name="moreinfo">Lisätietoja</string>
     <string name="todaysInfo">Tänään</string>
     <string name="sevendaysinfo">7 Päivää</string>
+    <string name="sensordata">Sensoridata</string>
+    <string name="temp">Lämpötila</string>
+    <string name="dewpoint">Kastepiste</string>
+    <string name="airpressure">Ilmanpaine</string>
+    <string name="airpressign">hPa</string>
 
 </resources>
