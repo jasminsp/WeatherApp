@@ -31,6 +31,11 @@
     <string name="moreinfo">More Info</string>
     <string name="todaysInfo">Today</string>
     <string name="sevendaysinfo">7 Days</string>
+    <string name="sensordata">Sensor data</string>
+    <string name="temp">Temp</string>
+    <string name="dewpoint">Dew Point</string>
+    <string name="airpressure">Air Pressure</string>
+    <string name="airpressign">hPa</string>
 
 
 </resources>
