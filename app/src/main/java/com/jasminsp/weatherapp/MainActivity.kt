@@ -239,11 +239,6 @@ fun MainView(navController: NavController, weatherViewModel: WeatherViewModel) {
 // Mock composable, delete when real one is done
 @Composable
 fun DetailView(navController: NavController, tempData: State<Float?>) {
-    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Detail View")
-        Button(onClick = { navController.navigateUp() }) {
-            Text("Back to Main View")
-        }
-        Text(tempData.value.toString())
-    }
+    TodayWithLazyGrid()
+    SevenDays()
 }
