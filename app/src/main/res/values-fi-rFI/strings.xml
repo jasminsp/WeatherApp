@@ -24,5 +24,8 @@
 
     <string name="today">TÄNÄÄN</string>
     <string name="yourlocation">SIJAINTISI</string>
+    <string name="moreinfo">Lisätietoja</string>
+    <string name="todaysInfo">Tänään</string>
+    <string name="sevendaysinfo">7 Päivää</string>
 
 </resources>
