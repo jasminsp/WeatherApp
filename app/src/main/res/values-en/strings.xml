@@ -28,6 +28,9 @@
 
     <string name="today">TODAY</string>
     <string name="yourlocation">YOUR LOCATION</string>
+    <string name="moreinfo">More Info</string>
+    <string name="todaysInfo">Today</string>
+    <string name="sevendaysinfo">7 Days</string>
 
 
 </resources>
