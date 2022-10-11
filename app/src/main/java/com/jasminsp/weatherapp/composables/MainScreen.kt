@@ -78,16 +78,20 @@ fun ShowFavourites(navController: NavController, viewModel: WeatherViewModel) {
     val favourite by viewModel.favouriteLocations.observeAsState()
     val fromDb = viewModel.favouritesFromDb.observeAsState()
 
-    fromDb.value?.forEach {
-        viewModel.getFavouriteWeather(it.latitude, it.longitude, it.locationUid)
+    if (fromDb.value?.isNotEmpty() == true) {
+        viewModel.getAllWeather()
     }
-    LazyColumn {
-        item {
-            favourite?.forEach { favourite ->
-                Log.i("WEATHER_RESPONSE", "$favourite")
+    if (favourite?.isNotEmpty() == true) {
+        LazyColumn {
+            item {
+                favourite?.forEach { favourite ->
+                    Log.i("WEATHER_RESPONSE", "$favourite")
                     FavouriteCard(navController, viewModel, favourite)
+                }
             }
         }
+    } else {
+        Text("No favourites yet!")
     }
 }
 
@@ -149,7 +153,7 @@ fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, fav
     val swipeAbleState = rememberSwipeableState(0)
     val sizePx = with(LocalDensity.current) { squareSize.toPx() }
     val anchors = mapOf(0f to 0, sizePx to 1)
-
+    Log.i("id:", "${favourite.id}")
 
     Card(modifier = Modifier
         .padding(horizontal = 30.dp, vertical = 5.dp)
@@ -163,7 +167,7 @@ fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, fav
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(15.dp))
                 .background(Color.Red)
-                .clickable { navController.navigate("detail view") }
+                .clickable { navController.navigate("detail view/${favourite.id}") }
                 .swipeable(
                     state = swipeAbleState,
                     anchors = anchors,
@@ -207,9 +211,12 @@ fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, fav
                     Image(modifier = Modifier.fillMaxWidth(),
                         contentScale = ContentScale.Crop,
                         painter = painterResource(getWeatherCondition(favourite.current_weather.weathercode, 2) as Int), contentDescription = "Helsinki" )
-                    Column(Modifier.fillMaxSize().background(
-                        setGradient(Color.LightGray)
-                    )) {
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .background(
+                                setGradient(Color.LightGray)
+                            )) {
                         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                             Column(Modifier.padding(top = 30.dp, start = 20.dp)) {
                                 Text("${getCurrentTemperature(favourite)}${Units().temperature}",style = MaterialTheme.typography.h2, color = Color.White)
