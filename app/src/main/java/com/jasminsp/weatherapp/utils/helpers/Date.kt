@@ -1,6 +1,7 @@
 package com.jasminsp.weatherapp.utils.helpers
 
 import java.text.SimpleDateFormat
+import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -11,7 +12,7 @@ fun formatDate(date: LocalDateTime): String {
 }
 
 fun formatTime(time: LocalDateTime): String {
-    val timeFormatter = DateTimeFormatter.ofPattern("HH:MM")
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     return timeFormatter.format(time)
 }
 
@@ -23,6 +24,10 @@ fun getDateToday(): String {
 fun getTimeNow(): String {
     val sdf = SimpleDateFormat.getTimeInstance()
     return sdf.format(Date())
+}
+
+fun getDayToday(): DayOfWeek? {
+    return LocalDateTime.now().dayOfWeek
 }
 
 fun getUTC0TimeNow(): String {
