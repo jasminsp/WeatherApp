@@ -11,5 +11,6 @@ data class Units (
     val milliMeter: String = "mm",
     val divider: String = "|",
     val solarRadiation: String = "MJ/m²",
-    val percent: String = "%"
+    val percent: String = "%",
+    val channelId: String = "Forecast notifications",
 )

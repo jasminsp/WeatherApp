@@ -17,14 +17,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
@@ -35,10 +34,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jasminsp.weatherapp.location.LocationHandler
 import com.jasminsp.weatherapp.location.LocationViewModel
+import com.jasminsp.weatherapp.utils.Units
 import com.jasminsp.weatherapp.composables.*
 import com.jasminsp.weatherapp.sensor.SensorViewModel
 import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
 import com.jasminsp.weatherapp.utils.createNotificationChannel
+import com.jasminsp.weatherapp.utils.showNotification
 import com.jasminsp.weatherapp.weather.WeatherViewModel
 import com.jasminsp.weatherapp.web.WeatherApiService
 import com.jasminsp.weatherapp.worker.WorkManagerScheduler
@@ -86,6 +87,7 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
         setUpSensor()
         startScanning()
         locationHandler.getMyLocation()
+
         setContent {
             val navController = rememberNavController()
             weatherViewModel = WeatherViewModel()
@@ -93,6 +95,10 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
             val tempData = sensorViewModel.tempData.observeAsState()
             val humData = sensorViewModel.humData.observeAsState()
             val presData = sensorViewModel.presData.observeAsState()
+
+            LaunchedEffect(Unit) {
+                createNotificationChannel(Units().channelId, applicationContext)
+            }
 
             WeatherAppTheme {
                 // A surface container using the 'background' color from the theme
