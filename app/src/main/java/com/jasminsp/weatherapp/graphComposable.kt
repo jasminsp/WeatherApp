@@ -113,11 +113,3 @@ fun GraphView(){
         ShowGraph(listOf(30,40,35,25,22,24,44,65,34,32,25,43), listOf(30, 50, 70, 65, 45, 29, 47,12,34,5,67,89))
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    WeatherAppTheme {
-        GraphView()
-    }
-}
