@@ -22,6 +22,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,7 @@ import com.jasminsp.weatherapp.location.LocationViewModel
 import com.jasminsp.weatherapp.composables.*
 import com.jasminsp.weatherapp.sensor.SensorViewModel
 import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
+import com.jasminsp.weatherapp.utils.createNotificationChannel
 import com.jasminsp.weatherapp.weather.WeatherViewModel
 import com.jasminsp.weatherapp.web.WeatherApiService
 import com.jasminsp.weatherapp.worker.WorkManagerScheduler
@@ -52,6 +54,7 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
         private lateinit var sensorManager: SensorManager
         private lateinit var ruuviRangeNotifier: IRuuviTagScanner
         private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
+        // helper variables for permission check
         private var isBTScanPermissionGranted = false
         private var isBTConnectPermissionGranted = false
         private var isLocationPermissionGranted = false
@@ -129,8 +132,9 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
     }
 
     override fun onResume() {
-        // Register a listener for the sensor.
+        // Register a listener for the internal sensors
         setUpSensor()
+        // Start scanning for RuuviTags
         startScanning()
         super.onResume()
     }
