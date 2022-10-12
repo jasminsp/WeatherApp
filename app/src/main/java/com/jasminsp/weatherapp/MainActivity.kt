@@ -239,6 +239,5 @@ fun MainView(navController: NavController, weatherViewModel: WeatherViewModel) {
 // Mock composable, delete when real one is done
 @Composable
 fun DetailView(navController: NavController, tempData: State<Float?>) {
-    TodayWithLazyGrid()
-    SevenDays()
+
 }

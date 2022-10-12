@@ -16,6 +16,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jasminsp.weatherapp.R
+import com.jasminsp.weatherapp.utils.helpers.getCurrentTemperature
+import com.jasminsp.weatherapp.web.WeatherApiService
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -28,7 +30,6 @@ fun TodayWithLazyGrid() {
     val moreInfo = stringResource(R.string.moreinfo)
     val todayInfo = stringResource(R.string.todaysInfo)
     val sevendayinfo = stringResource(R.string.sevendaysinfo)
-
     val onehour = time + 1
     val onehourtemperature = 28
 
@@ -158,9 +159,7 @@ fun TodayWithLazyGrid() {
 @Composable
 fun SevenDays() {
     val city = stringResource(R.string.city)
-    val bigtemperature = 27
     val today = stringResource(R.string.today)
-    val yourlocation = stringResource(R.string.yourlocation)
     val moreInfo = stringResource(R.string.moreinfo)
     val todayInfo = stringResource(R.string.todaysInfo)
     val sevendayinfo = stringResource(R.string.sevendaysinfo)
@@ -200,7 +199,6 @@ fun SevenDays() {
 
             {
                 Row(modifier = Modifier.fillMaxWidth()) {
-//navigation arrow
                     IconButton(onClick = { /*TODO*/ }) {
                         Icon(
                             painter = painterResource(R.drawable.arrow_left_44),
@@ -211,13 +209,7 @@ fun SevenDays() {
                     }
                     Text(today,modifier = Modifier.absoluteOffset(74.dp), style = MaterialTheme.typography.h3, color = Color.White)
                 }
-                Icon(
-                    painter = painterResource(R.drawable.nt_clear),
-                    contentDescription = "",
-                    tint = Color.White
-                )
-                Text(
-                    bigtemperature.toString() + "\u00B0",
+                Text("${getCurrentTemperature(favourite)}",
                     style = MaterialTheme.typography.h2,
                     color = Color.White
                 )
