@@ -19,33 +19,26 @@ class WeatherViewModel: ViewModel() {
     // Get favourite data from database saved latitude and longitude
     var favouritesFromDb: LiveData<List<FavouriteData>> = weatherRepository.favouriteData
 
-    // Fetch location from LocationRepository by searched location name
+    // Locations from locationRepository by searched location name
     fun getLocations(name: String) {
         viewModelScope.launch(Dispatchers.IO) {
                 val serverResp = locationRepository.getLocations(name)
-                // Save data to variable as livedata
                 searchedLocations.postValue(serverResp)
         }
     }
 
-    // Get location name by lat and long
-    private suspend fun getLocationNameById(id: Int): String = withContext(Dispatchers.IO) {
-        return@withContext locationRepository.getLocationById(id).name
-    }
-
-    // Fetch new weather data from weatherRepository by latitude and longitude from api
-    fun getFavouriteWeather(lat: Double, long: Double, id: Int) {
+    // Combine weather data calls from two different apis
+    fun getAllWeather() {
+        var result: WeatherApiService.MainWeather? = null
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val resp = async { weatherRepository.getWeather(lat, long) }
-                allFavourites.add(resp.await())
-                allFavourites.last().id = id
-
-                val name = async { getLocationNameById(id) }
-                allFavourites.last().name = name.await()
-            } catch (error: Error) {
-                errorToast(error)
-            } finally {
+            favouritesFromDb.value?.forEach {
+                val resp = async { weatherRepository.getWeather(it.latitude, it.longitude) }
+                val resp2 = async { locationRepository.getLocationById(it.locationUid) }
+                result = resp.await()
+                result!!.id = resp2.await().id
+                result!!.name = resp2.await().name
+                allFavourites.add(result!!)
+                delay(500)
                 favouriteLocations.postValue(allFavourites)
             }
         }

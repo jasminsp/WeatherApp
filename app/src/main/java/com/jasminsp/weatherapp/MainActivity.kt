@@ -27,16 +27,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.android.gms.location.FusedLocationProviderClient
+import androidx.navigation.navArgument
 import com.jasminsp.weatherapp.location.LocationHandler
 import com.jasminsp.weatherapp.location.LocationViewModel
 import com.jasminsp.weatherapp.composables.*
 import com.jasminsp.weatherapp.sensor.SensorViewModel
 import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
 import com.jasminsp.weatherapp.weather.WeatherViewModel
+import com.jasminsp.weatherapp.web.WeatherApiService
 import com.jasminsp.weatherapp.worker.WorkManagerScheduler
 import com.ruuvi.station.bluetooth.FoundRuuviTag
 import com.ruuvi.station.bluetooth.IRuuviTagScanner
@@ -99,7 +101,9 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
                     NavHost(navController, startDestination = "main view") {
                         composable("main view") { MainView(navController, weatherViewModel) } // Replace with reference to official Composable
                         composable("my location") { GraphView() } // Replace with reference to official Composable
-                        composable("detail view") { DetailView(navController, tempData) } // Replace with reference to official Composable
+                        composable("detail view/{id}", arguments = listOf(navArgument("id") { type = NavType.IntType })) {
+                            val id = it.arguments?.getInt("id") ?: 0
+                            DetailView(navController, weatherViewModel, id) }
                     }
                 }
             }
@@ -238,6 +242,8 @@ fun MainView(navController: NavController, weatherViewModel: WeatherViewModel) {
 
 // Mock composable, delete when real one is done
 @Composable
-fun DetailView(navController: NavController, tempData: State<Float?>) {
-
+fun DetailView(navController: NavController, viewModel: WeatherViewModel, id: Int) {
+    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        DetailCard(id, viewModel)
+    }
 }
