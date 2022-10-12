@@ -15,6 +15,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.material.Button
@@ -23,6 +26,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -243,7 +247,13 @@ fun MainView(navController: NavController, weatherViewModel: WeatherViewModel) {
 // Mock composable, delete when real one is done
 @Composable
 fun DetailView(navController: NavController, viewModel: WeatherViewModel, id: Int) {
+    val favourites by viewModel.favouriteLocations.observeAsState()
+    val favourite = favourites?.find { it.id == id }
+
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        DetailCard(id, viewModel)
+        if (favourite != null) {
+            HourlyWeather(favourite, navController)
+            DetailCard(favourite)
+        }
     }
 }

@@ -22,6 +22,11 @@ val NotoFamily = FontFamily(
 
 // Set of Material typography styles to start with
 val Typography = Typography(
+    h6 = TextStyle(
+        fontFamily = OxygenFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 100.sp,
+    ),
     h2 = TextStyle(
         fontFamily = OxygenFamily,
         fontWeight = FontWeight.Bold,
@@ -66,18 +71,4 @@ val Typography = Typography(
         fontFamily = OxygenFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 15.sp),
-
-
-    /* Other default text styles to override
-    button = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
-    ),
-    caption = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
-    )
-    */
     )
