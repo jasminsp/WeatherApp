@@ -65,7 +65,11 @@ fun SearchBar(viewModel: WeatherViewModel) {
             searchInput = it
             viewModel.getLocations(it)
         }, leadingIcon = {
-            Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = Color.Black)
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = Color.Black
+            )
         },
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = MaterialTheme.colors.surface,
@@ -95,7 +99,7 @@ fun ShowFavourites(navController: NavController, viewModel: WeatherViewModel) {
         viewModel.getAllWeather()
     }
     if (favourite?.isNotEmpty() == true) {
-        LazyColumn(modifier = Modifier.padding(top = 20.dp)){
+        LazyColumn(modifier = Modifier.padding(top = 20.dp)) {
             item {
                 favourite?.forEach { favourite ->
                     Log.i("WEATHER_RESPONSE", "$favourite")
@@ -129,26 +133,30 @@ fun ShowSearchResult(navController: NavController, viewModel: WeatherViewModel) 
                                 .fillMaxWidth()
                                 .padding(start = 15.dp),
                             Arrangement.SpaceBetween,
-                            Alignment.CenterVertically) {
+                            Alignment.CenterVertically
+                        ) {
                             Column(Modifier.padding(all = 20.dp)) {
                                 Text("${it.admin3 ?: it.admin2}")
-                                Text("${it.country_code}, ${it.country}",
+                                Text(
+                                    "${it.country_code}, ${it.country}",
                                     fontWeight = FontWeight(400), color = Color.Gray
                                 )
                             }
                             IconButton(
                                 onClick = {
-                                    addFavourite(viewModel, it.id,  it.latitude, it.longitude)
+                                    addFavourite(viewModel, it.id, it.latitude, it.longitude)
                                     navController.navigate("main view")
                                 },
                                 modifier = Modifier
                                     .size(50.dp)
                                     .clip(CircleShape)
-                                    .background(Color.White)) {
+                                    .background(Color.White)
+                            ) {
                                 Icon(
                                     Icons.Filled.Add,
                                     contentDescription = "Delete",
-                                    tint = Color.Black)
+                                    tint = Color.Black
+                                )
                             }
                         }
                     }
@@ -159,7 +167,11 @@ fun ShowSearchResult(navController: NavController, viewModel: WeatherViewModel) 
 }
 
 @Composable
-fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: WeatherViewModel, locationViewModel: LocationViewModel) {
+fun YourLocationCard(
+    sensorViewModel: SensorViewModel,
+    weatherViewModel: WeatherViewModel,
+    locationViewModel: LocationViewModel
+) {
 
     weatherViewModel.getWeatherByLocation(45.508888, -73.561668)
 
@@ -167,7 +179,7 @@ fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: Weather
     val city = stringResource(R.string.city)
     val yourlocation = stringResource(R.string.yourlocation)
     val forecaststring = stringResource(R.string.forecast_letters)
-    val sensordatastring= stringResource(R.string.sensordata)
+    val sensordatastring = stringResource(R.string.sensordata)
 
     val temp = stringResource(R.string.temp)
     val humidity = stringResource(R.string.humidity)
@@ -190,12 +202,13 @@ fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: Weather
     val dewPoint = sensorViewModel.calculateDewPoint(showRuuviData.value)
 
     //Expansion
-    var expandedState by remember { mutableStateOf(false)}
+    var expandedState by remember { mutableStateOf(false) }
     //Arrow turn
     val rotationState by animateFloatAsState(
-        targetValue = if (expandedState) 0f else 180f)
+        targetValue = if (expandedState) 0f else 180f
+    )
 
-    Box(){
+    Box() {
         Card(
             elevation = 30.dp,
             shape = MaterialTheme.shapes.large,
@@ -205,25 +218,31 @@ fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: Weather
                 .padding(start = 30.dp, top = 15.dp, end = 30.dp)
                 .shadow(elevation = 30.dp, shape = RoundedCornerShape(size = 10.dp), clip = false)
         ) {
-            Box(modifier = Modifier
-                .fillMaxSize()
-                //Placehoder color for the back. Delete after photos added
-                .background(color = MaterialTheme.colors.primaryVariant)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
-                Image(modifier = Modifier.fillMaxSize(),
+                Image(
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop,
-                    painter = painterResource(R.mipmap.foggy_illu), contentDescription = "Helsinki" )
-
+                    painter = painterResource(R.mipmap.foggy_illu), contentDescription = "Helsinki"
+                )
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 )
                 {
-                    Column(modifier = Modifier
-                        .padding(top = 30.dp, start = 20.dp))
+                    Column(
+                        modifier = Modifier
+                            .padding(top = 30.dp, start = 20.dp)
+                    )
                     {
-                        Text(temperature + "\u00B0", style = MaterialTheme.typography.h2, color = Color.White)
+                        Text(
+                            temperature + "\u00B0",
+                            style = MaterialTheme.typography.h2,
+                            color = Color.White
+                        )
                         Text(yourlocation, style = MaterialTheme.typography.h4, color = Color.White)
                         Text(city, style = MaterialTheme.typography.subtitle1, color = Color.White)
                         AndroidView(
@@ -238,19 +257,23 @@ fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: Weather
                                 }
                             }
                         )
-                        //Text(min + " / " + max, style = MaterialTheme.typography.body1, color = Color.White)
                     }
 
 
-                    Column(modifier = Modifier
-                        .padding(top = 15.dp, end = 20.dp),)
+                    Column(
+                        modifier = Modifier
+                            .padding(top = 15.dp, end = 20.dp),
+                    )
                     {
                         Image(
-                            painter = painterResource(R.drawable.clear_icon), contentDescription = ""
+                            painter = painterResource(R.drawable.clear_icon),
+                            contentDescription = ""
                         )
-                        Text(forecaststring,
+                        Text(
+                            forecaststring,
                             style = MaterialTheme
-                                .typography.subtitle2, color = Color.White)
+                                .typography.subtitle2, color = Color.White
+                        )
                     }
                 }
             }
@@ -270,59 +293,94 @@ fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: Weather
                             )
                         )
                 ) {
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
-                        horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                        Text(sensordatastring +"   ",
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            sensordatastring + "   ",
                             style = MaterialTheme
-                                .typography.subtitle2)
-                        Icon(painter = painterResource(R.drawable.down_arrow_icon),
+                                .typography.subtitle2
+                        )
+                        Icon(
+                            painter = painterResource(R.drawable.down_arrow_icon),
                             modifier = Modifier
                                 .requiredSize(20.dp)
-                                .rotate(rotationState), contentDescription = "")
+                                .rotate(rotationState), contentDescription = ""
+                        )
                     }
                     //Expansion is that sensordata part
-                    if(expandedState){
-                        Column(modifier = Modifier
-                            .fillMaxSize()
-                            .padding(top = 20.dp, bottom = 20.dp))
+                    if (expandedState) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 20.dp, bottom = 20.dp)
+                        )
                         {
-                            Row(modifier = Modifier
-                                .fillMaxWidth(),
-                                horizontalArrangement  =  Arrangement.SpaceBetween)
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            )
                             {
-                                Column(modifier = Modifier
-                                    .padding(start = 20.dp),
-                                    verticalArrangement = Arrangement.spacedBy(15.dp))
+                                Column(
+                                    modifier = Modifier
+                                        .padding(start = 20.dp),
+                                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                                )
                                 {
-                                    Text(temp , modifier = Modifier.padding(vertical = 3.dp))
-                                    Text(humidity, modifier = Modifier.padding(vertical = 3.dp) )
-                                    Text(dewpoint , modifier = Modifier.padding(vertical = 3.dp))
+                                    Text(temp, modifier = Modifier.padding(vertical = 3.dp))
+                                    Text(humidity, modifier = Modifier.padding(vertical = 3.dp))
+                                    Text(dewpoint, modifier = Modifier.padding(vertical = 3.dp))
                                     Text(airpressure, modifier = Modifier.padding(vertical = 3.dp))
                                 }
-                                Column(modifier = Modifier
-                                    .padding(start = 2.dp),
-                                    verticalArrangement = Arrangement.spacedBy(15.dp))
+                                Column(
+                                    modifier = Modifier
+                                        .padding(start = 2.dp),
+                                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                                )
                                 {
-                                    Text("- - - - - - - -", modifier = Modifier.padding(vertical = 3.dp))
-                                    Text("- - - - - - - -", modifier = Modifier.padding(vertical = 3.dp))
-                                    Text("- - - - - - - -", modifier = Modifier.padding(vertical = 3.dp))
-                                    Text("- - - - - - - -", modifier = Modifier.padding(vertical = 3.dp))
+                                    Text(
+                                        "- - - - - - - -",
+                                        modifier = Modifier.padding(vertical = 3.dp)
+                                    )
+                                    Text(
+                                        "- - - - - - - -",
+                                        modifier = Modifier.padding(vertical = 3.dp)
+                                    )
+                                    Text(
+                                        "- - - - - - - -",
+                                        modifier = Modifier.padding(vertical = 3.dp)
+                                    )
+                                    Text(
+                                        "- - - - - - - -",
+                                        modifier = Modifier.padding(vertical = 3.dp)
+                                    )
                                 }
 
-                                Column(modifier = Modifier
-                                    .padding( end = 20.dp),
+                                Column(
+                                    modifier = Modifier
+                                        .padding(end = 20.dp),
                                     verticalArrangement = Arrangement.spacedBy(15.dp),
-                                    horizontalAlignment = Alignment.End)
+                                    horizontalAlignment = Alignment.End
+                                )
                                 {
                                     if (showRuuviData.value) {
                                         Text(
-                                            if (tempRuuvi.value!=null) String.format("%.1f", tempRuuvi.value) + "\u00B0" else "N/A",
+                                            if (tempRuuvi.value != null) String.format(
+                                                "%.1f",
+                                                tempRuuvi.value
+                                            ) + "\u00B0" else "N/A",
                                             modifier = Modifier.padding(vertical = 3.dp)
                                         )
                                         Text(
-                                            if (humRuuvi.value!=null) String.format("%.0f", humRuuvi.value) + percent else "N/A",
+                                            if (humRuuvi.value != null) String.format(
+                                                "%.0f",
+                                                humRuuvi.value
+                                            ) + percent else "N/A",
                                             modifier = Modifier.padding(vertical = 3.dp)
                                         )
                                         Text(
@@ -330,7 +388,10 @@ fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: Weather
                                             modifier = Modifier.padding(vertical = 3.dp)
                                         )
                                         Text(
-                                            if (presRuuvi.value!=null) String.format("%.0f", presRuuvi.value!! /100f) + airpressurehPa else "N/A",
+                                            if (presRuuvi.value != null) String.format(
+                                                "%.0f",
+                                                presRuuvi.value!! / 100f
+                                            ) + airpressurehPa else "N/A",
                                             modifier = Modifier.padding(vertical = 3.dp)
                                         )
                                     } else {
@@ -351,9 +412,11 @@ fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: Weather
                                             modifier = Modifier.padding(vertical = 3.dp)
                                         )
                                     }
-                                    Button(onClick = { showRuuviData.value = !showRuuviData.value},
+                                    Button(
+                                        onClick = { showRuuviData.value = !showRuuviData.value },
                                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                                    modifier = Modifier.height(50.dp)) {
+                                        modifier = Modifier.height(50.dp)
+                                    ) {
                                         if (showRuuviData.value) {
                                             Text("Sensor data")
                                         } else {
@@ -374,21 +437,29 @@ fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: Weather
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, favourite: WeatherApiService.MainWeather) {
+fun FavouriteCard(
+    navController: NavController,
+    viewModel: WeatherViewModel,
+    favourite: WeatherApiService.MainWeather
+) {
     val squareSize = 150.dp
     val swipeAbleState = rememberSwipeableState(0)
     val sizePx = with(LocalDensity.current) { squareSize.toPx() }
     val anchors = mapOf(0f to 0, sizePx to 1)
     Log.i("id:", "${favourite.id}")
 
-    Card(modifier = Modifier
-        .padding(horizontal = 30.dp, vertical = 5.dp)
-        .clip(RoundedCornerShape(15.dp))) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
+    Card(
+        modifier = Modifier
+            .padding(horizontal = 30.dp, vertical = 5.dp)
+            .clip(RoundedCornerShape(15.dp))
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally) {
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(15.dp))
@@ -401,7 +472,8 @@ fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, fav
                         FractionalThreshold(0.3f)
                     },
                     orientation = Orientation.Horizontal
-                )) {
+                )
+            ) {
                 Column(
                     Modifier
                         .fillMaxHeight()
@@ -415,11 +487,13 @@ fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, fav
                         modifier = Modifier
                             .size(50.dp)
                             .clip(CircleShape)
-                            .background(Color.White)) {
+                            .background(Color.White)
+                    ) {
                         Icon(
                             Icons.Filled.Delete,
                             contentDescription = "Delete",
-                            tint = Color.Black)
+                            tint = Color.Black
+                        )
                     }
                 }
                 Box(modifier = Modifier
@@ -434,25 +508,72 @@ fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, fav
                     .fillMaxHeight()
                     .align(Alignment.CenterStart)) {
 
-                    Image(modifier = Modifier.fillMaxWidth(),
+                    Image(
+                        modifier = Modifier.fillMaxWidth(),
                         contentScale = ContentScale.Crop,
-                        painter = painterResource(getWeatherCondition(favourite.current_weather.weathercode, 2) as Int), contentDescription = "Helsinki" )
+                        painter = painterResource(
+                            getWeatherCondition(
+                                favourite.current_weather.weathercode,
+                                2
+                            ) as Int
+                        ), contentDescription = "Helsinki"
+                    )
                     Column(
                         Modifier
                             .fillMaxSize()
                             .background(
                                 setGradient(Color.LightGray)
-                            )) {
+                            )
+                    ) {
                         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                             Column(Modifier.padding(top = 30.dp, start = 20.dp)) {
-                                Text("${getCurrentTemperature(favourite)}${Units().temperature}",style = MaterialTheme.typography.h2, color = Color.White)
-                                Text(favourite.name ?: "", style = MaterialTheme.typography.subtitle1, color = Color.White)
+                                Text(
+                                    "${getCurrentTemperature(favourite)}${Units().temperature}",
+                                    style = MaterialTheme.typography.h2,
+                                    color = Color.White
+                                )
+                                Text(
+                                    favourite.name ?: "",
+                                    style = MaterialTheme.typography.subtitle1,
+                                    color = Color.White
+                                )
                                 DisplayTxtClock(favourite.timezone)
                             }
-                            Column(Modifier.padding(top = 15.dp, end = 20.dp), horizontalAlignment = Alignment.End) {
-                                Image( painter = painterResource(getWeatherCondition(favourite.current_weather.weathercode, 1) as Int), contentDescription = "")
-                                Text("${getWeatherCondition(favourite.current_weather.weathercode, 0)}", style = MaterialTheme.typography.body1, color = Color.White)
-                                Text("${getMinMaxTempToday(favourite, true)}${Units().temperatureShort} | ${getMinMaxTempToday(favourite, false)}${Units().temperatureShort}", style = MaterialTheme.typography.body2, color = Color.White)
+                            Column(
+                                Modifier.padding(top = 15.dp, end = 20.dp),
+                                horizontalAlignment = Alignment.End
+                            ) {
+                                Image(
+                                    painter = painterResource(
+                                        getWeatherCondition(
+                                            favourite.current_weather.weathercode,
+                                            1
+                                        ) as Int
+                                    ), contentDescription = ""
+                                )
+                                Text(
+                                    "${
+                                        getWeatherCondition(
+                                            favourite.current_weather.weathercode,
+                                            0
+                                        )
+                                    }", style = MaterialTheme.typography.body1, color = Color.White
+                                )
+                                Text(
+                                    "${
+                                        getMinMaxTempToday(
+                                            favourite,
+                                            true
+                                        )
+                                    }${Units().temperatureShort} | ${
+                                        getMinMaxTempToday(
+                                            favourite,
+                                            false
+                                        )
+                                    }${Units().temperatureShort}",
+                                    style = MaterialTheme.typography.body2,
+                                    color = Color.White
+                                )
                             }
                         }
                     }

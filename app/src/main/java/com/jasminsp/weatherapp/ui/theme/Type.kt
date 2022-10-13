@@ -14,13 +14,6 @@ val OxygenFamily = FontFamily(
     Font(R.font.oxygen_bold, FontWeight.Bold)
 )
 
-val NotoFamily = FontFamily(
-    Font(R.font.noto_serif, FontWeight.Normal),
-    Font(R.font.noto_serif_bold, FontWeight.Bold)
-)
-
-
-// Set of Material typography styles to start with
 val Typography = Typography(
     h6 = TextStyle(
         fontFamily = OxygenFamily,
