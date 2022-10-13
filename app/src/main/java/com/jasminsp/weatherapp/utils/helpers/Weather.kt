@@ -1,13 +1,15 @@
 package com.jasminsp.weatherapp.utils.helpers
 
-import android.util.Log
 import com.jasminsp.weatherapp.R
 import com.jasminsp.weatherapp.web.WeatherApiService
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
 
 // All daily weather variables/ use case: getDailyWeatherVariables(favourite, 4)
-fun getDailyWeatherVariables(favourite: WeatherApiService.MainWeather, returnOption: Int): List<Pair<String, Any>> {
+fun getDailyWeatherVariables(
+    favourite: WeatherApiService.MainWeather,
+    returnOption: Int
+): List<Pair<String, Any>> {
     val dailyTempMin = favourite.daily.time.zip(favourite.daily.temperature_2m_min)
     val dailyTempMax = favourite.daily.time.zip(favourite.daily.temperature_2m_max)
     val dailyTempMinApparent = favourite.daily.time.zip(favourite.daily.apparent_temperature_min)
@@ -28,7 +30,9 @@ fun getDailyWeatherVariables(favourite: WeatherApiService.MainWeather, returnOpt
         6 -> maxWindSpeed
         7 -> uv
         8 -> rainSum
-        else -> {dailyTempMin}
+        else -> {
+            dailyTempMin
+        }
     }
     return data
 }
@@ -50,14 +54,16 @@ fun getWeatherCondition(weatherCode: Int, returnOption: Int): Any {
         in 85..86 -> "Snow showers"
         95 -> "Thunderstorm"
         in 96..99 -> "Thunderstorm with hail"
-        else -> {"Clear sky"}
+        else -> {
+            "Clear sky"
+        }
     }
-    // Change these mock icons to real icons
+    // Returns right icon for weather
     val conditionIcon = when (condition) {
         "Clear sky" -> R.drawable.clear_icon
         "Mainly clear" -> R.drawable.clear_icon
         "Partly cloudy" -> R.drawable.cloudy_icon
-        "Overcast"  -> R.drawable.cloudy_icon
+        "Overcast" -> R.drawable.cloudy_icon
         "Fog" -> R.drawable.cloudy_icon
         "Drizzle" -> R.drawable.rainy_icon
         "Rain" -> R.drawable.rainy_icon
@@ -65,7 +71,7 @@ fun getWeatherCondition(weatherCode: Int, returnOption: Int): Any {
         "Snow" -> R.drawable.snowy_icon
         "Snow grains" -> R.drawable.snowy_icon
         "Rain showers" -> R.drawable.rainy_icon
-        "Snow showers"  -> R.drawable.snowy_icon
+        "Snow showers" -> R.drawable.snowy_icon
         "Thunderstorm" -> R.drawable.stormy_icon
         "Thunderstorm with hail" -> R.drawable.stormy_icon
         else -> {
@@ -73,11 +79,12 @@ fun getWeatherCondition(weatherCode: Int, returnOption: Int): Any {
         }
     }
 
+    // Returns right background image
     val backgroundImage = when (condition) {
         "Clear sky" -> R.mipmap.clear_illu2
         "Mainly clear" -> R.mipmap.misty_illu
         "Partly cloudy" -> R.mipmap.cloudy_illu2
-        "Overcast"  -> R.mipmap.cloudy_illu
+        "Overcast" -> R.mipmap.cloudy_illu
         "Fog" -> R.mipmap.foggy_illu
         "Drizzle" -> R.mipmap.rainy_illu
         "Rain" -> R.mipmap.rainy_illu
@@ -85,7 +92,7 @@ fun getWeatherCondition(weatherCode: Int, returnOption: Int): Any {
         "Snow" -> R.mipmap.snowy_illu
         "Snow grains" -> R.mipmap.snowy_illu
         "Rain showers" -> R.mipmap.rainy_illu
-        "Snow showers"  -> R.mipmap.snowy_illu
+        "Snow showers" -> R.mipmap.snowy_illu
         "Thunderstorm" -> R.mipmap.windy_illu
         "Thunderstorm with hail" -> R.mipmap.stormy_illu
         else -> {
@@ -97,7 +104,9 @@ fun getWeatherCondition(weatherCode: Int, returnOption: Int): Any {
         0 -> condition
         1 -> conditionIcon
         2 -> backgroundImage
-        else -> {condition}
+        else -> {
+            condition
+        }
     }
     return data
 }
@@ -117,7 +126,10 @@ fun getMinMaxTempToday(favourite: WeatherApiService.MainWeather, returnMin: Bool
     return if (returnMin) minTempToday?.roundToInt() else maxTempToday?.roundToInt()
 }
 
-fun getDailyVariablesToday(favourite: WeatherApiService.MainWeather, returnOption: Int): Comparable<*>? {
+fun getDailyVariablesToday(
+    favourite: WeatherApiService.MainWeather,
+    returnOption: Int
+): Comparable<*>? {
     var windSpeed: Double? = null
     var sunrise: LocalDateTime? = null
     var sunset: LocalDateTime? = null
@@ -143,7 +155,9 @@ fun getDailyVariablesToday(favourite: WeatherApiService.MainWeather, returnOptio
         3 -> weatherCode
         4 -> rainSum
         5 -> uvRadiation?.toInt()
-        else -> {""}
+        else -> {
+            ""
+        }
     }
     return data
 }
@@ -152,11 +166,14 @@ fun getCurrentTemperature(favourite: WeatherApiService.MainWeather): Int {
     return favourite.current_weather.temperature.toInt()
 }
 
-fun getHourlyWeatherVariables(favourite: WeatherApiService.MainWeather, returnOption: Int): List<Pair<String, Double>> {
+fun getHourlyWeatherVariables(
+    favourite: WeatherApiService.MainWeather,
+    returnOption: Int
+): List<Pair<String, Double>> {
     val temperature = favourite.hourly.time.zip(favourite.hourly.temperature_2m)
     val humidity = favourite.hourly.time.zip(favourite.hourly.relativehumidity_2m)
 
-    val data = when(returnOption) {
+    val data = when (returnOption) {
         0 -> temperature
         1 -> humidity
         else -> {

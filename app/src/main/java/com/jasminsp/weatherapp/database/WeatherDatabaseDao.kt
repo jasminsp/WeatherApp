@@ -2,9 +2,6 @@ package com.jasminsp.weatherapp.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.google.gson.internal.bind.util.ISO8601Utils
-import com.jasminsp.weatherapp.web.WeatherApiService
-import java.text.DateFormat
 
 @Entity(tableName = "user_favourites", primaryKeys = ["latitude", "longitude"])
 data class FavouriteData(

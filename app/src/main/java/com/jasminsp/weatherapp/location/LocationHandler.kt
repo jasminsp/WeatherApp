@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -20,7 +19,6 @@ class LocationHandler(private var context: Context, var viewModel: LocationViewM
     val currentLocation: LiveData<Location> = _currentLocation
 
     fun getMyLocation() {
-        Log.d("DMG", "getMyLocation called")
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
         if (ActivityCompat.checkSelfPermission(
@@ -29,16 +27,10 @@ class LocationHandler(private var context: Context, var viewModel: LocationViewM
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                Log.d("DMG", "We gots shit A, $location")
-                if (location!=null) {
+                if (location != null) {
                     viewModel.updateLocation(location)
-                    Log.d("DMG", "We gots shit B")
-                } else {
-                    Log.d("DMG", "Location value is $location")
                 }
             }
-        } else {
-            Log.d("DMG", "Problem with fetching location")
         }
 
         locationCallback = object : LocationCallback() {

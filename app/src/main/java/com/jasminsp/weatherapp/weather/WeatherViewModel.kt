@@ -2,16 +2,14 @@ package com.jasminsp.weatherapp.weather
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.google.android.gms.tasks.Tasks.await
 import com.jasminsp.weatherapp.database.FavouriteData
 import com.jasminsp.weatherapp.repository.LocationRepository
 import com.jasminsp.weatherapp.repository.WeatherRepository
-import com.jasminsp.weatherapp.utils.errorToast
 import com.jasminsp.weatherapp.web.LocationApiService
 import com.jasminsp.weatherapp.web.WeatherApiService
 import kotlinx.coroutines.*
 
-class WeatherViewModel: ViewModel() {
+class WeatherViewModel : ViewModel() {
     private val locationRepository = LocationRepository()
     private val weatherRepository = WeatherRepository
     val searchedLocations = MutableLiveData<LocationApiService.Model.Result>()
@@ -25,8 +23,8 @@ class WeatherViewModel: ViewModel() {
     // Locations from locationRepository by searched location name
     fun getLocations(name: String) {
         viewModelScope.launch(Dispatchers.IO) {
-                val serverResp = locationRepository.getLocations(name)
-                searchedLocations.postValue(serverResp)
+            val serverResp = locationRepository.getLocations(name)
+            searchedLocations.postValue(serverResp)
         }
     }
 
@@ -50,7 +48,7 @@ class WeatherViewModel: ViewModel() {
     fun getWeatherByLocation(lat: Double, long: Double) {
         var result: WeatherApiService.MainWeather? = null
         viewModelScope.launch(Dispatchers.IO) {
-            val resp = async {weatherRepository.getWeather(lat, long)}
+            val resp = async { weatherRepository.getWeather(lat, long) }
             result = resp.await()
             yourLocation.postValue(result!!)
             Log.d("YourLocation", yourLocation.value.toString())
