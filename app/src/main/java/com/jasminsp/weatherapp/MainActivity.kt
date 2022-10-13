@@ -24,6 +24,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -112,7 +114,6 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
                     // The sensor data could be combined into an object
                     NavHost(navController, startDestination = "main view") {
                         composable("main view") { MainView(navController, weatherViewModel, sensorViewModel, locationViewModel) } // Replace with reference to official Composable
-                        composable("my location") {  } // Replace with reference to official Composable
                         composable("detail view/{id}", arguments = listOf(navArgument("id") { type = NavType.IntType })) {
                             val id = it.arguments?.getInt("id") ?: 0
                             DetailView(navController, weatherViewModel, id) }
@@ -254,7 +255,6 @@ fun MainView(navController: NavController, weatherViewModel: WeatherViewModel, s
     }
 }
 
-// Mock composable, delete when real one is done
 @Composable
 fun DetailView(navController: NavController, viewModel: WeatherViewModel, id: Int) {
     val favourites by viewModel.favouriteLocations.observeAsState()
