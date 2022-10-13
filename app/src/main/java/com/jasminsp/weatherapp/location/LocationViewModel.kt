@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 
 class LocationViewModel: ViewModel() {
-    private var userLatitude = 0.0
-    private var userLongtitude = 0.0
+    var userLatitude = 0.0
+    var userLongtitude = 0.0
 
     fun updateLocation(newLocation: Location) {
         userLatitude = newLocation.latitude

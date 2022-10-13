@@ -1,6 +1,7 @@
 package com.jasminsp.weatherapp.composables
 
 import android.util.Log
+import android.content.Context
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -18,8 +19,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+import com.github.mikephil.charting.charts.CombinedChart
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.jasminsp.weatherapp.R
+import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
 import com.jasminsp.weatherapp.utils.Units
 import com.jasminsp.weatherapp.utils.helpers.*
 import com.jasminsp.weatherapp.web.WeatherApiService
@@ -94,19 +102,14 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                                             .padding(bottom = 25.dp)
                                     ) {
                                             Column(
-                                                modifier = Modifier
-                                                    .fillMaxSize()
-                                                    .padding(horizontal = 10.dp),
+                                                modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp),
                                                 horizontalAlignment = Alignment.CenterHorizontally
                                             ) {
                                                 Card(Modifier
                                                     .padding(4.dp),
                                                     backgroundColor = MaterialTheme.colors.onSurface,
                                                     elevation = 0.dp) {
-                                                    Column(
-                                                        Modifier
-                                                            .fillMaxSize()
-                                                            .padding(4.dp),
+                                                    Column(Modifier.fillMaxSize().padding(4.dp),
                                                         horizontalAlignment = Alignment.CenterHorizontally
                                                     ) {
                                                         WeekDay(min.first)
@@ -162,9 +165,7 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                                                     backgroundColor = MaterialTheme.colors.onSurface,
                                                 elevation = 0.dp) {
                                                 Column(
-                                                    Modifier
-                                                        .fillMaxSize()
-                                                        .padding(4.dp),
+                                                    Modifier.fillMaxSize().padding(4.dp),
                                                     horizontalAlignment = Alignment.CenterHorizontally
                                                 ) {
                                                     Text(formatTime(LocalDateTime.parse(hourly.first)))
@@ -228,7 +229,10 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
             Box(modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 740.dp)) {
-                DetailCard(favourite)
+                Column() {
+                    DetailCard(favourite)
+                    GraphCard(favourite)
+                }
             }
     }
 }
@@ -382,3 +386,128 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                     }
                 }
             }
+
+@Composable
+fun GraphCard(favourite: WeatherApiService.MainWeather) {
+    val temperatureVariables = getHourlyWeatherVariables(favourite, 0).take(12)
+    val humidityVariables = getHourlyWeatherVariables(favourite, 1).take(12)
+
+    Card(
+        elevation = 30.dp,
+        shape = MaterialTheme.shapes.large,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(all = 20.dp)
+            .shadow(
+                elevation = 30.dp,
+                shape = RoundedCornerShape(size = 10.dp),
+                clip = false
+            )
+    ) {
+        Column {
+            GraphView(temperatureVariables, humidityVariables)
+        }
+    }
+}
+
+@Composable
+fun ShowGraph(dataSetA: List<Pair<String, Double>>, dataSetB: List<Pair<String, Double>>) {
+    val entries: MutableList<Entry> = mutableListOf()
+    val barList: MutableList<BarEntry> = mutableListOf()
+    val labelList: ArrayList<String> = arrayListOf()
+
+    // Linedata
+    dataSetA.forEachIndexed { index, value ->
+        entries.add(Entry((index + 0.5f), value.second.toFloat()))
+        labelList.add(value.first[11].toString() + value.first[12].toString())
+    }
+
+    // Bardata
+    dataSetB.forEachIndexed { index, value ->
+        barList.add(BarEntry((index + 0.5f), value.second.toFloat()))
+    }
+
+    Column(
+        modifier = Modifier
+            .padding(9.dp),
+    ) {
+        AndroidView(
+            modifier = Modifier
+                .fillMaxSize(),
+            factory = { context: Context ->
+                val view = CombinedChart(context)
+                val data = CombinedData()
+                view.legend.isEnabled = false
+                val tempData = LineDataSet(entries, "Temp")
+                val humData = BarDataSet(barList, "Hum")
+                tempData.color = android.graphics.Color.BLUE
+                tempData.setCircleColor(android.graphics.Color.BLACK)
+                tempData.mode = LineDataSet.Mode.CUBIC_BEZIER
+                tempData.lineWidth = 3f
+                tempData.valueTextSize = 14f
+                humData.color = android.graphics.Color.GRAY
+                humData.setDrawValues(true)
+                humData.valueTextSize = 14f
+
+                val temperature = LineData(tempData)
+                temperature.isHighlightEnabled = false
+
+                val humidity = BarData(humData)
+                humidity.isHighlightEnabled = false
+                humidity.barWidth = 0.5f
+
+                data.setData(temperature)
+                data.setData(humidity)
+                val desc = Description()
+                desc.isEnabled = false
+
+                // remove legend and gridlines
+                view.axisLeft.setDrawLabels(false)
+                view.axisLeft.setDrawGridLines(false)
+                view.axisRight.setDrawLabels(false)
+                view.axisRight.setDrawGridLines(false)
+                view.xAxis.setDrawLabels(true)
+                view.xAxis.setDrawGridLines(false)
+                view.xAxis.position = XAxis.XAxisPosition.BOTTOM
+
+                // adjust visible area, set up scrolling
+                view.xAxis.axisMinimum = 0f
+                view.xAxis.axisMaximum = barList.size.toFloat()
+                view.setVisibleXRange(5f, 5f)
+
+                // setup labeling and adjust label spacing
+                view.xAxis.valueFormatter = IndexAxisValueFormatter(labelList)
+                view.xAxis.setCenterAxisLabels(true)
+                view.xAxis.granularity = 1f
+
+                // remove unwanted functionality
+                view.setTouchEnabled(true)
+                view.setScaleEnabled(false)
+                view.setPinchZoom(false)
+
+                view.data = data
+                view.description = desc
+                view// return the view
+            },
+            update = { view ->
+                // Update the view
+                view.invalidate()
+            }
+        )
+    }
+}
+
+@Composable
+fun GraphView(tempData: List<Pair<String, Double>>, humData: List<Pair<String, Double>>){
+    Column(modifier = Modifier
+        .height(400.dp)
+        .width(400.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Spacer(Modifier.height(16.dp))
+        Row() {
+            Text(stringResource(R.string.graphdeschum), color = Color.Gray)
+            Spacer(Modifier.width(16.dp))
+            Text(stringResource(R.string.graphdesctemp), color = Color.Blue)
+        }
+        ShowGraph(tempData, humData)
+    }
+}
