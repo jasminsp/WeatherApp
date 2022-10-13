@@ -37,8 +37,7 @@
     <string name="airpressure">Air Pressure</string>
     <string name="airpressign">hPa</string>
 
-
-
-
+    <string name="graphdeschum">Humidity</string>
+    <string name="graphdesctemp">Temperature</string>
 
 </resources>

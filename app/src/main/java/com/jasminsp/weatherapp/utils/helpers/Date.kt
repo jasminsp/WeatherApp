@@ -17,6 +17,11 @@ fun formatTime(time: LocalDateTime): String {
     return timeFormatter.format(time)
 }
 
+fun formatHour(time: LocalDateTime): String {
+    val timeFormatter = DateTimeFormatter.ofPattern("HH")
+    return timeFormatter.format(time)
+}
+
 fun getDateToday(): String {
     return formatDate(LocalDateTime.now())
 }
