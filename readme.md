@@ -3,7 +3,7 @@
 This project was part of Metropolia University of Applied sciences Kotlin and Compose development course where one of the main topics were
 also Bluetooth, maps, Android sensors and AR.
 
-## Table of Content
+## Table of Contents
 
 - Overview
 - App features
@@ -16,7 +16,8 @@ also Bluetooth, maps, Android sensors and AR.
 ## Overview
 
 Forecast is a simple weather application which gives two type of data and visualizes them on the screen. Data that is shown
-is taken from external API services as well as phone's own sensors. 
+is taken from external API services as well as phone's own sensors. The app also implements sensor data from RuuviTags by
+simply checking and collecting data from devices that are in range of the phone's bluetooth. 
 
 ## Features:
 
@@ -31,12 +32,12 @@ is taken from external API services as well as phone's own sensors.
 - Jetpack Compose - [Android Jetpack Compose](https://developer.android.com/jetpack)
 - Room database with [sqLite](https://www.sqlite.org/index.html)
 - [material design](https://material.io/)
+- RuuviTag - [Ruuvi Bluetooth](https://github.com/ruuvi/com.ruuvi.bluetooth)
 
 ## Backend and APIs service:
 
 Forecast relies on Room database fo storing favourite locations. On top of this it uses to API services for the weather data. 
 Data is updated every two hours automatically from [Open-Meteo-api](https://open-meteo.com/en) and it's [geocoding-api](https://open-meteo.com/en/docs/geocoding-api).
-
 
 ## Set up
 
@@ -50,7 +51,6 @@ $ git clone https://github.com/jasminsp/WeatherApp.git
 ## Screenshots
 
 Some of the views
-
 
 ## Contributors
 
