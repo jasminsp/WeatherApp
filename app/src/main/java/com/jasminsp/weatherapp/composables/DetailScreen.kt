@@ -12,7 +12,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -27,12 +26,9 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.jasminsp.weatherapp.R
-import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
 import com.jasminsp.weatherapp.utils.Units
 import com.jasminsp.weatherapp.utils.helpers.*
 import com.jasminsp.weatherapp.web.WeatherApiService
-import java.lang.String.format
-import java.text.DateFormat
 import java.time.LocalDateTime
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -197,6 +193,7 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                             .fillMaxWidth()
                             .padding(bottom = 15.dp)
                             .align(Alignment.BottomCenter)
+                            .background(MaterialTheme.colors.onSurface)
                     ) {
                         Column(modifier = Modifier
                             .fillMaxWidth(0.5f)
@@ -249,7 +246,6 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
             val low = stringResource(R.string.low)
 
                 Card(
-                    elevation = 30.dp,
                     shape = MaterialTheme.shapes.large,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -258,7 +254,8 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                             elevation = 30.dp,
                             shape = RoundedCornerShape(size = 10.dp),
                             clip = false
-                        )
+                        ),
+
                 ) {
                     Column {
                         Row(
@@ -393,7 +390,6 @@ fun GraphCard(favourite: WeatherApiService.MainWeather) {
     val humidityVariables = getHourlyWeatherVariables(favourite, 1).take(12)
 
     Card(
-        elevation = 30.dp,
         shape = MaterialTheme.shapes.large,
         modifier = Modifier
             .fillMaxWidth()
@@ -402,7 +398,7 @@ fun GraphCard(favourite: WeatherApiService.MainWeather) {
                 elevation = 30.dp,
                 shape = RoundedCornerShape(size = 10.dp),
                 clip = false
-            )
+            ),
     ) {
         Column {
             GraphView(temperatureVariables, humidityVariables)
@@ -441,7 +437,7 @@ fun ShowGraph(dataSetA: List<Pair<String, Double>>, dataSetB: List<Pair<String, 
                 val tempData = LineDataSet(entries, "Temp")
                 val humData = BarDataSet(barList, "Hum")
                 tempData.color = android.graphics.Color.BLUE
-                tempData.setCircleColor(android.graphics.Color.BLACK)
+                tempData.setCircleColor(android.graphics.Color.WHITE)
                 tempData.mode = LineDataSet.Mode.CUBIC_BEZIER
                 tempData.lineWidth = 3f
                 tempData.valueTextSize = 14f
