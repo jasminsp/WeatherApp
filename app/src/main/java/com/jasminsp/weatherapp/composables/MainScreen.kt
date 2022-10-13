@@ -1,6 +1,7 @@
 package com.jasminsp.weatherapp.composables
 
 import android.util.Log
+import android.widget.TextClock
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -186,9 +187,10 @@ fun YourLocationCard() {
                 .padding(start = 30.dp, top = 15.dp, end = 30.dp)
                 .shadow(elevation = 30.dp, shape = RoundedCornerShape(size = 10.dp), clip = false)
         ) {
-            Box(modifier = Modifier.fillMaxSize()
+            Box(modifier = Modifier
+                .fillMaxSize()
                 //Placehoder color for the back. Delete after photos added
-                .background(color= MaterialTheme.colors.primaryVariant)
+                .background(color = MaterialTheme.colors.primaryVariant)
             ) {
                 //Delete these after photos added
                 /* Image(
@@ -248,8 +250,9 @@ fun YourLocationCard() {
                             )
                         )
                 ) {
-                    Row(modifier = Modifier.fillMaxWidth()
-                        .padding(top= 10.dp),
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
                         horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                         Text(sensordatastring +"   ",
                             style = MaterialTheme
@@ -261,8 +264,8 @@ fun YourLocationCard() {
                     }
                     //Expansion is that sensordata part
                     if(expandedState){
-                        Column(modifier = Modifier.
-                        fillMaxSize()
+                        Column(modifier = Modifier
+                            .fillMaxSize()
                             .padding(top = 20.dp, bottom = 20.dp))
                         {
                             Row(modifier = Modifier
@@ -384,7 +387,7 @@ fun FavouriteCard(navController: NavController, viewModel: WeatherViewModel, fav
                             Column(Modifier.padding(top = 30.dp, start = 20.dp)) {
                                 Text("${getCurrentTemperature(favourite)}${Units().temperature}",style = MaterialTheme.typography.h2, color = Color.White)
                                 Text(favourite.name ?: "", style = MaterialTheme.typography.subtitle1, color = Color.White)
-                                Text(getTimeNow(), style = MaterialTheme.typography.body1,  color = Color.White)
+                                DisplayTxtClock(favourite.timezone)
                             }
                             Column(Modifier.padding(top = 15.dp, end = 20.dp), horizontalAlignment = Alignment.End) {
                                 Image( painter = painterResource(getWeatherCondition(favourite.current_weather.weathercode, 1) as Int), contentDescription = "")

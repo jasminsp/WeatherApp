@@ -1,5 +1,6 @@
 package com.jasminsp.weatherapp.composables
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -93,17 +94,22 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                                             .padding(bottom = 25.dp)
                                     ) {
                                             Column(
-                                                modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp),
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .padding(horizontal = 10.dp),
                                                 horizontalAlignment = Alignment.CenterHorizontally
                                             ) {
                                                 Card(Modifier
                                                     .padding(4.dp),
                                                     backgroundColor = MaterialTheme.colors.onSurface,
                                                     elevation = 0.dp) {
-                                                    Column(Modifier.fillMaxSize().padding(4.dp),
+                                                    Column(
+                                                        Modifier
+                                                            .fillMaxSize()
+                                                            .padding(4.dp),
                                                         horizontalAlignment = Alignment.CenterHorizontally
                                                     ) {
-                                                        Text("Monday")
+                                                        WeekDay(min.first)
                                                         Icon(
                                                             painter = painterResource(R.drawable.clear_icon),
                                                             modifier = Modifier.requiredSize(55.dp),
@@ -111,7 +117,7 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                                                             tint = Color.Black
                                                         )
                                                         Row {
-                                                            Text("${min.second}${Units().temperatureShort}")
+                                                            Text("${String.format("%.0f", min.second)}${Units().temperatureShort}")
                                                             Text(
                                                                 Units().divider,
                                                                 modifier = Modifier.padding(
@@ -119,11 +125,10 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                                                                 )
                                                             )
                                                             Text(
-                                                                "${
-                                                                    getDailyWeatherByIndex(
-                                                                        favourite,
-                                                                        index
-                                                                    )
+                                                                "${String.format("%.0f", getDailyWeatherByIndex(
+                                                                    favourite,
+                                                                    index
+                                                                ))
                                                                 }${Units().temperatureShort}"
                                                             )
                                                         }
@@ -157,7 +162,9 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                                                     backgroundColor = MaterialTheme.colors.onSurface,
                                                 elevation = 0.dp) {
                                                 Column(
-                                                    Modifier.fillMaxSize().padding(4.dp),
+                                                    Modifier
+                                                        .fillMaxSize()
+                                                        .padding(4.dp),
                                                     horizontalAlignment = Alignment.CenterHorizontally
                                                 ) {
                                                     Text(formatTime(LocalDateTime.parse(hourly.first)))
@@ -278,15 +285,15 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                                 modifier = Modifier.padding(top = 35.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text("$low${Units().temperatureShort} | $high${Units().temperatureShort}")
+                                Text("$low | $high")
                                 Row {
                                     Text(
-                                        "${getMinMaxTempToday(favourite, true)}",
+                                        "${getMinMaxTempToday(favourite, true)}${Units().temperatureShort}",
                                         color = Color.Blue
                                     )
                                     Text(Units().divider, Modifier.padding(start = 13.dp))
                                     Text(
-                                        "   ${getMinMaxTempToday(favourite, false)}",
+                                        "   ${getMinMaxTempToday(favourite, false)}${Units().temperatureShort}",
                                         color = Color.Red
                                     )
                                 }
