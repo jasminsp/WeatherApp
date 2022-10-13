@@ -166,6 +166,14 @@ fun getHourlyWeatherVariables(favourite: WeatherApiService.MainWeather, returnOp
     return data
 }
 
+fun getHourlyWeatherCodeByIndex(favourite: WeatherApiService.MainWeather, index: Int): Int {
+    return favourite.hourly.time.zip(favourite.hourly.weathercode)[index].second
+}
+
+fun getDailyWeatherByIndex(favourite: WeatherApiService.MainWeather, index: Int): Double {
+    return favourite.daily.time.zip(favourite.daily.temperature_2m_max)[index].second
+}
+
 fun getHumidityAverage(favourite: WeatherApiService.MainWeather): Int {
     val humidityValues: MutableList<Double> = mutableListOf()
 

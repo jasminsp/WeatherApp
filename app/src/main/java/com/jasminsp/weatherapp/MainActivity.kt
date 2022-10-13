@@ -15,6 +15,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.material.MaterialTheme
@@ -22,7 +27,9 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -253,7 +260,19 @@ fun MainView(navController: NavController, weatherViewModel: WeatherViewModel) {
 // Mock composable, delete when real one is done
 @Composable
 fun DetailView(navController: NavController, viewModel: WeatherViewModel, id: Int) {
-    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        DetailCard(id, viewModel)
+    val favourites by viewModel.favouriteLocations.observeAsState()
+    val favourite = favourites?.find { it.id == id }
+
+    Box(Modifier.verticalScroll(rememberScrollState())) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1500.dp)
+
+            ) {
+                if (favourite != null) {
+                        HourlyWeather(favourite, navController)
+                }
+            }
     }
 }
