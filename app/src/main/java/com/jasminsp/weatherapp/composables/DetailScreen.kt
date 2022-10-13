@@ -1,9 +1,6 @@
 package com.jasminsp.weatherapp.composables
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -13,6 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -37,8 +35,8 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
 
     Box(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier
-                .align(Alignment.TopStart)
-                .background(color = MaterialTheme.colors.primaryVariant)
+            .align(Alignment.TopStart)
+            .background(color = MaterialTheme.colors.primaryVariant)
         ) {
             Image(
                 modifier = Modifier.fillMaxSize(),
@@ -85,7 +83,7 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                         // Hourly grid
                         LazyVerticalGrid(
                             cells = GridCells.Adaptive(120.dp),
-                            modifier = Modifier.padding(bottom = 100.dp, top = 25.dp),
+                            modifier = Modifier.padding(bottom = 50.dp, top = 25.dp),
                             content = {
                                 items(dailyMin) { min ->
                                     val index = dailyMin.indexOf(min)
@@ -94,32 +92,53 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                                             .fillMaxSize()
                                             .padding(bottom = 25.dp)
                                     ) {
-                                        Column(
-                                            modifier = Modifier.fillMaxSize(),
-                                            horizontalAlignment = Alignment.CenterHorizontally
-                                        ) {
-                                            Text("Monday")
-                                            Icon(
-                                                painter = painterResource(R.drawable.clear_icon),
-                                                modifier = Modifier.requiredSize(55.dp),
-                                                contentDescription = "",
-                                                tint = Color.Black
-                                            )
-                                            Row {
-                                                Text("${min.second}${Units().temperatureShort}")
-                                                Text(Units().divider, modifier = Modifier.padding(horizontal = 5.dp))
-                                                Text("${getDailyWeatherByIndex(favourite, index)}${Units().temperatureShort}")
+                                            Column(
+                                                modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp),
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
+                                                Card(Modifier
+                                                    .padding(4.dp),
+                                                    backgroundColor = MaterialTheme.colors.onSurface,
+                                                    elevation = 0.dp) {
+                                                    Column(Modifier.fillMaxSize().padding(4.dp),
+                                                        horizontalAlignment = Alignment.CenterHorizontally
+                                                    ) {
+                                                        Text("Monday")
+                                                        Icon(
+                                                            painter = painterResource(R.drawable.clear_icon),
+                                                            modifier = Modifier.requiredSize(55.dp),
+                                                            contentDescription = "",
+                                                            tint = Color.Black
+                                                        )
+                                                        Row {
+                                                            Text("${min.second}${Units().temperatureShort}")
+                                                            Text(
+                                                                Units().divider,
+                                                                modifier = Modifier.padding(
+                                                                    horizontal = 5.dp
+                                                                )
+                                                            )
+                                                            Text(
+                                                                "${
+                                                                    getDailyWeatherByIndex(
+                                                                        favourite,
+                                                                        index
+                                                                    )
+                                                                }${Units().temperatureShort}"
+                                                            )
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
-                                }
                             }
                         )
                     } else {
                         // Daily grid
                         LazyVerticalGrid(
                             cells = GridCells.Adaptive(90.dp),
-                            modifier = Modifier.padding(bottom = 100.dp, top = 25.dp),
+                            modifier = Modifier.padding(bottom = 50.dp, top = 25.dp),
                             content = {
                                 items(hourlyVariables) { hourly ->
                                     val index = hourlyVariables.indexOf(hourly)
@@ -132,31 +151,45 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                                             modifier = Modifier.fillMaxSize(),
                                             horizontalAlignment = Alignment.CenterHorizontally
                                         ) {
-                                            Text(formatTime(LocalDateTime.parse(hourly.first)))
-                                            Icon(
-                                                painter = painterResource(
-                                                    getWeatherCondition(
-                                                        getHourlyWeatherCodeByIndex(
-                                                            favourite,
-                                                            index
-                                                        ), 1
-                                                    ) as Int
-                                                ),
-                                                modifier = Modifier.requiredSize(55.dp),
-                                                contentDescription = "",
-                                                tint = Color.Black
-                                            )
-                                            Text("${hourly.second.toInt()}${Units().temperatureShort}")
+                                            Card(
+                                                Modifier
+                                                    .padding(4.dp),
+                                                    backgroundColor = MaterialTheme.colors.onSurface,
+                                                elevation = 0.dp) {
+                                                Column(
+                                                    Modifier.fillMaxSize().padding(4.dp),
+                                                    horizontalAlignment = Alignment.CenterHorizontally
+                                                ) {
+                                                    Text(formatTime(LocalDateTime.parse(hourly.first)))
+                                                    Icon(
+                                                        painter = painterResource(
+                                                            getWeatherCondition(
+                                                                getHourlyWeatherCodeByIndex(
+                                                                    favourite,
+                                                                    index
+                                                                ), 1
+                                                            ) as Int
+                                                        ),
+                                                        modifier = Modifier.requiredSize(55.dp),
+                                                        contentDescription = "",
+                                                        tint = Color.Black
+                                                    )
+                                                    Text("${hourly.second.toInt()}${Units().temperatureShort}")
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         )
                     }
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 15.dp)
-                        .align(Alignment.BottomCenter)) {
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 15.dp)
+                            .align(Alignment.BottomCenter)
+                    ) {
                         Column(modifier = Modifier
                             .fillMaxWidth(0.5f)
                             .clickable { state = !state }) {
@@ -165,7 +198,8 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                                 thickness = 2.dp
                             )
                             Text(
-                                stringResource(id = R.string.todaysInfo), Modifier.align(Alignment.CenterHorizontally),
+                                stringResource(id = R.string.todaysInfo),
+                                Modifier.align(Alignment.CenterHorizontally),
                                 style = MaterialTheme.typography.h5,
                                 color = if (!state) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onPrimary
                             )
@@ -176,13 +210,19 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
                                 thickness = 2.dp
                             )
                             Text(
-                                stringResource(id = R.string.sevendaysinfo), Modifier.align(Alignment.CenterHorizontally),
+                                stringResource(id = R.string.sevendaysinfo),
+                                Modifier.align(Alignment.CenterHorizontally),
                                 style = MaterialTheme.typography.h5,
                                 color = if (!state) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSecondary
                             )
                         }
                     }
                 }
+            Box(modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 740.dp)) {
+                DetailCard(favourite)
+            }
     }
 }
 
@@ -197,108 +237,141 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
             val high = stringResource(R.string.high)
             val low = stringResource(R.string.low)
 
-            Card(
-                elevation = 30.dp,
-                shape = MaterialTheme.shapes.large,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = 20.dp)
-                    .shadow(
-                        elevation = 30.dp,
-                        shape = RoundedCornerShape(size = 10.dp),
-                        clip = false
-                    )
-            ) {
-                Column {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
+                Card(
+                    elevation = 30.dp,
+                    shape = MaterialTheme.shapes.large,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(all = 20.dp)
+                        .shadow(
+                            elevation = 30.dp,
+                            shape = RoundedCornerShape(size = 10.dp),
+                            clip = false
+                        )
+                ) {
+                    Column {
                         Row(
-                            modifier = Modifier
-                                .padding(top = 20.dp, start = 20.dp)
-                                .fillMaxWidth(0.6f), verticalAlignment = Alignment.CenterVertically
+                            modifier = Modifier.fillMaxWidth(),
                         ) {
-                            Text("${getDayToday()}")
-                            Icon(painter = painterResource(
-                                getWeatherCondition(getDailyVariablesToday(favourite, 3) as Int, 1) as Int),
+                            Row(
                                 modifier = Modifier
-                                    .requiredWidth(60.dp)
-                                    .padding(start = 1.dp), contentDescription = "")
-                        }
-                        Column(
-                            modifier = Modifier.padding(top = 35.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text("$low | $high")
-                            Row {
-                                Text("${getMinMaxTempToday(favourite, true)}",
-                                    color = Color.Blue
+                                    .padding(top = 20.dp, start = 20.dp)
+                                    .fillMaxWidth(0.6f),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("${getDayToday()}")
+                                Icon(
+                                    painter = painterResource(
+                                        getWeatherCondition(
+                                            getDailyVariablesToday(
+                                                favourite,
+                                                3
+                                            ) as Int, 1
+                                        ) as Int
+                                    ),
+                                    modifier = Modifier
+                                        .requiredWidth(60.dp)
+                                        .padding(start = 1.dp), contentDescription = ""
                                 )
-                                Text(Units().divider, Modifier.padding(start = 13.dp))
-                                Text("   ${getMinMaxTempToday(favourite, false)}",
-                                    color = Color.Red
+                            }
+                            Column(
+                                modifier = Modifier.padding(top = 35.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text("$low${Units().temperatureShort} | $high${Units().temperatureShort}")
+                                Row {
+                                    Text(
+                                        "${getMinMaxTempToday(favourite, true)}",
+                                        color = Color.Blue
+                                    )
+                                    Text(Units().divider, Modifier.padding(start = 13.dp))
+                                    Text(
+                                        "   ${getMinMaxTempToday(favourite, false)}",
+                                        color = Color.Red
+                                    )
+                                }
+                            }
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        )
+                        {
+                            Column(modifier = Modifier.padding(top = 30.dp, start = 20.dp)) {
+                                Text(wind, modifier = Modifier.padding(vertical = 3.dp))
+                                Text(humidity, modifier = Modifier.padding(vertical = 3.dp))
+                                Text(rain, modifier = Modifier.padding(vertical = 3.dp))
+                                Text(uv, modifier = Modifier.padding(vertical = 3.dp))
+                            }
+                            Column(modifier = Modifier.padding(top = 30.dp, start = 20.dp)) {
+                                Text(
+                                    " - - - - - - - - - - - - -   ",
+                                    modifier = Modifier.padding(vertical = 3.dp)
+                                )
+                                Text(
+                                    "   - - - - - - - - - - -   ",
+                                    modifier = Modifier.padding(vertical = 3.dp)
+                                )
+                                Text(
+                                    "- - - - - - - - - - - - - -   ",
+                                    modifier = Modifier.padding(vertical = 3.dp)
+                                )
+                                Text(
+                                    "- - - - - - - - - - - - - -    ",
+                                    modifier = Modifier.padding(vertical = 3.dp)
+                                )
+                            }
+                            Column(modifier = Modifier.padding(top = 30.dp, end = 20.dp)) {
+                                Text(
+                                    "${
+                                        getDailyVariablesToday(
+                                            favourite,
+                                            0
+                                        )
+                                    }${Units().metersSecond}",
+                                    modifier = Modifier.padding(vertical = 3.dp)
+                                )
+                                Text(
+                                    "${getHumidityAverage(favourite)}${Units().percent}",
+                                    modifier = Modifier.padding(vertical = 3.dp)
+                                )
+                                Text(
+                                    "${getDailyVariablesToday(favourite, 4)}${Units().milliMeter}",
+                                    modifier = Modifier.padding(vertical = 3.dp)
+                                )
+                                Text(
+                                    "${
+                                        getDailyVariablesToday(
+                                            favourite,
+                                            5
+                                        )
+                                    }${Units().solarRadiation}",
+                                    modifier = Modifier.padding(vertical = 3.dp)
                                 )
                             }
                         }
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    )
-                    {
-                        Column(modifier = Modifier.padding(top = 30.dp, start = 20.dp)) {
-                            Text(wind, modifier = Modifier.padding(vertical = 3.dp))
-                            Text(humidity, modifier = Modifier.padding(vertical = 3.dp))
-                            Text(rain, modifier = Modifier.padding(vertical = 3.dp))
-                            Text(uv, modifier = Modifier.padding(vertical = 3.dp))
-                        }
-                        Column(modifier = Modifier.padding(top = 30.dp, start = 20.dp)) {
-                            Text(" - - - - - - - - - - - - -   ",
-                                modifier = Modifier.padding(vertical = 3.dp))
-                            Text("   - - - - - - - - - - -   ",
-                                modifier = Modifier.padding(vertical = 3.dp))
-                            Text("- - - - - - - - - - - - - -   ",
-                                modifier = Modifier.padding(vertical = 3.dp))
-                            Text("- - - - - - - - - - - - - -    ",
-                                modifier = Modifier.padding(vertical = 3.dp))
-                        }
-                        Column(modifier = Modifier.padding(top = 30.dp, end = 20.dp)) {
-                            Text("${getDailyVariablesToday(favourite, 0)}${Units().metersSecond}",
-                                modifier = Modifier.padding(vertical = 3.dp)
-                            )
-                            Text("${getHumidityAverage(favourite)}${Units().percent}",
-                                modifier = Modifier.padding(vertical = 3.dp)
-                            )
-                            Text("${getDailyVariablesToday(favourite, 4)}${Units().milliMeter}",
-                                modifier = Modifier.padding(vertical = 3.dp)
-                            )
-                            Text("${getDailyVariablesToday(favourite, 5)}${Units().solarRadiation}",
-                                modifier = Modifier.padding(vertical = 3.dp)
-                            )
-                        }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Column(
-                            Modifier.padding(10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            Text(sunrise)
-                            Text("${getDailyVariablesToday(favourite, 1)}")
-                        }
-                        Column(
-                            Modifier.padding(10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(sunset)
-                            Text("${getDailyVariablesToday(favourite, 2)}")
+                            Column(
+                                Modifier.padding(10.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(sunrise)
+                                Text("${getDailyVariablesToday(favourite, 1)}")
+                            }
+                            Column(
+                                Modifier.padding(10.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(sunset)
+                                Text("${getDailyVariablesToday(favourite, 2)}")
+                            }
                         }
                     }
                 }
             }
-        }

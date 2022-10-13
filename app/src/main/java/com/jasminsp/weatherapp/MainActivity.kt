@@ -15,9 +15,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.material.Button
@@ -28,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
@@ -250,10 +253,16 @@ fun DetailView(navController: NavController, viewModel: WeatherViewModel, id: In
     val favourites by viewModel.favouriteLocations.observeAsState()
     val favourite = favourites?.find { it.id == id }
 
-    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        if (favourite != null) {
-            HourlyWeather(favourite, navController)
-            DetailCard(favourite)
-        }
+    Box(Modifier.verticalScroll(rememberScrollState())) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1500.dp)
+
+            ) {
+                if (favourite != null) {
+                        HourlyWeather(favourite, navController)
+                }
+            }
     }
 }
