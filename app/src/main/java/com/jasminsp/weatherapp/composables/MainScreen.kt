@@ -65,7 +65,7 @@ fun SearchBar(viewModel: WeatherViewModel) {
             searchInput = it
             viewModel.getLocations(it)
         }, leadingIcon = {
-            Icon(imageVector = Icons.Default.Search, contentDescription = null)
+            Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = Color.Black)
         },
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = MaterialTheme.colors.surface,
@@ -104,7 +104,7 @@ fun ShowFavourites(navController: NavController, viewModel: WeatherViewModel) {
             }
         }
     } else {
-        Text("No favourites yet!")
+        Text("No favourites yet!", modifier = Modifier.padding(top = 10.dp))
     }
 }
 
@@ -166,9 +166,6 @@ fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: Weather
     val temperature = stringResource(R.string.temperature)
     val city = stringResource(R.string.city)
     val yourlocation = stringResource(R.string.yourlocation)
-    val time = stringResource(R.string.time)
-    val am = stringResource(R.string.am)
-    val pm = stringResource(R.string.pm)
     val forecaststring = stringResource(R.string.forecast_letters)
     val sensordatastring= stringResource(R.string.sensordata)
 
@@ -188,6 +185,7 @@ fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: Weather
     val tempRuuvi = sensorViewModel.tempDataTag.observeAsState()
     val humRuuvi = sensorViewModel.humDataTag.observeAsState()
     val presRuuvi = sensorViewModel.presDataTag.observeAsState()
+    val userLocation by weatherViewModel.yourLocation.observeAsState()
 
     val dewPoint = sensorViewModel.calculateDewPoint(showRuuviData.value)
 
@@ -203,7 +201,7 @@ fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: Weather
             shape = MaterialTheme.shapes.large,
             modifier = Modifier
                 .fillMaxWidth()
-                .requiredHeightIn(min = 260.dp, max = 260.dp)
+                .requiredHeightIn(min = 260.dp, max = 300.dp)
                 .padding(start = 30.dp, top = 15.dp, end = 30.dp)
                 .shadow(elevation = 30.dp, shape = RoundedCornerShape(size = 10.dp), clip = false)
         ) {
@@ -212,18 +210,9 @@ fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: Weather
                 //Placehoder color for the back. Delete after photos added
                 .background(color = MaterialTheme.colors.primaryVariant)
             ) {
-                //Delete these after photos added
-                /* Image(
-                     modifier = Modifier.fillMaxSize(),
-                     contentScale = ContentScale.Crop,
-                     painter = painterResource(R.drawable.helsinki_ican), contentDescription = "Helsinki"
-                 )
-                 Image(
-                     modifier = Modifier.fillMaxSize(),
-                     contentScale = ContentScale.Crop,
-                     painter = painterResource(R.drawable.yellow80), contentDescription = ""
-                 )
-                 */
+                Image(modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop,
+                    painter = painterResource(R.mipmap.foggy_illu), contentDescription = "Helsinki" )
 
                 Row(
                     modifier = Modifier
@@ -269,7 +258,7 @@ fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: Weather
             Box() {
                 Column(
                     modifier = Modifier
-                        .requiredHeightIn(min = 50.dp, max = 260.dp)
+                        .requiredHeightIn(min = 50.dp, max = 300.dp)
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
                         .background(color = Color.White)
