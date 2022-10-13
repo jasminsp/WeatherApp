@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.jasminsp.weatherapp.MainActivity
 import com.jasminsp.weatherapp.R
+import com.jasminsp.weatherapp.location.LocationViewModel
 import com.jasminsp.weatherapp.sensor.SensorViewModel
 import com.jasminsp.weatherapp.utils.*
 import com.jasminsp.weatherapp.utils.helpers.*
@@ -54,7 +55,8 @@ fun SearchBar(viewModel: WeatherViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentSize(Alignment.Center)
-            .padding(horizontal = 60.dp, vertical = 20.dp)
+            // .padding((horizontal = 60.dp,  = 20.dp))
+            .padding(60.dp, 20.dp, 60.dp, 10.dp)
     ) {
         TextField(value = searchInput, onValueChange = {
             searchInput = it
@@ -90,7 +92,7 @@ fun ShowFavourites(navController: NavController, viewModel: WeatherViewModel) {
         viewModel.getAllWeather()
     }
     if (favourite?.isNotEmpty() == true) {
-        LazyColumn {
+        LazyColumn(modifier = Modifier.padding(top = 20.dp)){
             item {
                 favourite?.forEach { favourite ->
                     Log.i("WEATHER_RESPONSE", "$favourite")
@@ -154,7 +156,10 @@ fun ShowSearchResult(navController: NavController, viewModel: WeatherViewModel) 
 }
 
 @Composable
-fun YourLocationCard(sensorViewModel: SensorViewModel) {
+fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: WeatherViewModel, locationViewModel: LocationViewModel) {
+
+    weatherViewModel.getWeatherByLocation(locationViewModel.userLatitude, locationViewModel.userLongtitude)
+
     val temperature = stringResource(R.string.temperature)
     val city = stringResource(R.string.city)
     val yourlocation = stringResource(R.string.yourlocation)
@@ -188,7 +193,6 @@ fun YourLocationCard(sensorViewModel: SensorViewModel) {
     //Arrow turn
     val rotationState by animateFloatAsState(
         targetValue = if (expandedState) 0f else 180f)
-
 
     Box(){
         Card(
@@ -344,9 +348,14 @@ fun YourLocationCard(sensorViewModel: SensorViewModel) {
                                             modifier = Modifier.padding(vertical = 3.dp)
                                         )
                                     }
-                                    Button(onClick = { showRuuviData.value = !showRuuviData.value
-                                    Log.d("DMG", "RuuviData.value")}) {
-                                        Text("Test")
+                                    Button(onClick = { showRuuviData.value = !showRuuviData.value},
+                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                                    modifier = Modifier.height(50.dp)) {
+                                        if (showRuuviData.value) {
+                                            Text("Sensor data")
+                                        } else {
+                                            Text("RuuviTag data")
+                                        }
                                     }
                                 }
                             }

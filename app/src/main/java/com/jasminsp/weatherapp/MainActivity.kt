@@ -111,7 +111,7 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
                 ) {
                     // The sensor data could be combined into an object
                     NavHost(navController, startDestination = "main view") {
-                        composable("main view") { MainView(navController, weatherViewModel, sensorViewModel) } // Replace with reference to official Composable
+                        composable("main view") { MainView(navController, weatherViewModel, sensorViewModel, locationViewModel) } // Replace with reference to official Composable
                         composable("my location") { GraphView() } // Replace with reference to official Composable
                         composable("detail view/{id}", arguments = listOf(navArgument("id") { type = NavType.IntType })) {
                             val id = it.arguments?.getInt("id") ?: 0
@@ -245,11 +245,11 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
 }
 
 @Composable
-fun MainView(navController: NavController, weatherViewModel: WeatherViewModel, sensorViewModel: SensorViewModel) {
+fun MainView(navController: NavController, weatherViewModel: WeatherViewModel, sensorViewModel: SensorViewModel, locationViewModel: LocationViewModel) {
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         SearchBar(weatherViewModel)
-        YourLocationCard(sensorViewModel)
         ShowSearchResult(navController, weatherViewModel)
+        YourLocationCard(sensorViewModel, weatherViewModel, locationViewModel)
         ShowFavourites(navController, weatherViewModel)
     }
 }

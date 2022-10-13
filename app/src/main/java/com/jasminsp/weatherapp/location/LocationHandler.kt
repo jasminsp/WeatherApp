@@ -34,13 +34,12 @@ class LocationHandler(private var context: Context, var viewModel: LocationViewM
                     viewModel.updateLocation(location)
                     Log.d("DMG", "We gots shit B")
                 } else {
-                    Log.d("DBM", "Location value is $location")
+                    Log.d("DMG", "Location value is $location")
                 }
             }
         } else {
             Log.d("DMG", "Problem with fetching location")
         }
-
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
