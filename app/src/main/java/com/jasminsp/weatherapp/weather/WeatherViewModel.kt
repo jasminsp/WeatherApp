@@ -2,6 +2,7 @@ package com.jasminsp.weatherapp.weather
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.google.android.gms.tasks.Tasks.await
 import com.jasminsp.weatherapp.database.FavouriteData
 import com.jasminsp.weatherapp.repository.LocationRepository
 import com.jasminsp.weatherapp.repository.WeatherRepository
@@ -47,13 +48,13 @@ class WeatherViewModel: ViewModel() {
     }
 
     fun getWeatherByLocation(lat: Double, long: Double) {
-        Log.d("YourLocation", "lat: $lat, lon: $long")
         var result: WeatherApiService.MainWeather? = null
         viewModelScope.launch(Dispatchers.IO) {
-            result = weatherRepository.getWeather(lat, long)
+            val resp = async {weatherRepository.getWeather(lat, long)}
+            result = resp.await()
+            yourLocation.postValue(result!!)
+            Log.d("YourLocation", yourLocation.value.toString())
         }
-        if (result != null) yourLocation.value = result!!
-        Log.d("YourLocation", yourLocation.value.toString())
     }
 
     // add favourite longitude and latitude to database

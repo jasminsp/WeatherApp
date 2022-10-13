@@ -1,6 +1,7 @@
 package com.jasminsp.weatherapp.composables
 
 import android.util.Log
+import android.widget.TextClock
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -34,6 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.jasminsp.weatherapp.MainActivity
 import com.jasminsp.weatherapp.R
@@ -158,7 +161,7 @@ fun ShowSearchResult(navController: NavController, viewModel: WeatherViewModel) 
 @Composable
 fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: WeatherViewModel, locationViewModel: LocationViewModel) {
 
-    weatherViewModel.getWeatherByLocation(locationViewModel.userLatitude, locationViewModel.userLongtitude)
+    weatherViewModel.getWeatherByLocation(45.508888, -73.561668)
 
     val temperature = stringResource(R.string.temperature)
     val city = stringResource(R.string.city)
@@ -234,7 +237,18 @@ fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: Weather
                         Text(temperature + "\u00B0", style = MaterialTheme.typography.h2, color = Color.White)
                         Text(yourlocation, style = MaterialTheme.typography.h4, color = Color.White)
                         Text(city, style = MaterialTheme.typography.subtitle1, color = Color.White)
-                        Text(time + am, style = MaterialTheme.typography.body2, color = Color.White)
+                        AndroidView(
+                            factory = { context ->
+                                TextClock(context).apply {
+                                    // on below line we are setting 12 hour format.
+                                    format12Hour?.let { this.format12Hour = "hh:mm a" }
+                                    // on below line we are setting time zone.
+                                    timeZone?.let { this.timeZone = it }
+                                    textSize.let { this.textSize = 20f }
+                                    setTextColor(ContextCompat.getColor(context, R.color.white))
+                                }
+                            }
+                        )
                         //Text(min + " / " + max, style = MaterialTheme.typography.body1, color = Color.White)
                     }
 
