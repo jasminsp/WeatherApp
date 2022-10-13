@@ -1,6 +1,7 @@
 package com.jasminsp.weatherapp.composables
 
 import android.util.Log
+import android.widget.TextClock
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -34,8 +35,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import com.jasminsp.weatherapp.MainActivity
 import com.jasminsp.weatherapp.R
+import com.jasminsp.weatherapp.location.LocationViewModel
+import com.jasminsp.weatherapp.sensor.SensorViewModel
 import com.jasminsp.weatherapp.utils.*
 import com.jasminsp.weatherapp.utils.helpers.*
 import com.jasminsp.weatherapp.weather.WeatherViewModel
@@ -52,7 +58,8 @@ fun SearchBar(viewModel: WeatherViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentSize(Alignment.Center)
-            .padding(horizontal = 60.dp, vertical = 20.dp)
+            // .padding((horizontal = 60.dp,  = 20.dp))
+            .padding(60.dp, 20.dp, 60.dp, 10.dp)
     ) {
         TextField(value = searchInput, onValueChange = {
             searchInput = it
@@ -88,7 +95,7 @@ fun ShowFavourites(navController: NavController, viewModel: WeatherViewModel) {
         viewModel.getAllWeather()
     }
     if (favourite?.isNotEmpty() == true) {
-        LazyColumn {
+        LazyColumn(modifier = Modifier.padding(top = 20.dp)){
             item {
                 favourite?.forEach { favourite ->
                     Log.i("WEATHER_RESPONSE", "$favourite")
@@ -152,7 +159,10 @@ fun ShowSearchResult(navController: NavController, viewModel: WeatherViewModel) 
 }
 
 @Composable
-fun YourLocationCard() {
+fun YourLocationCard(sensorViewModel: SensorViewModel, weatherViewModel: WeatherViewModel, locationViewModel: LocationViewModel) {
+
+    weatherViewModel.getWeatherByLocation(45.508888, -73.561668)
+
     val temperature = stringResource(R.string.temperature)
     val city = stringResource(R.string.city)
     val yourlocation = stringResource(R.string.yourlocation)
@@ -169,12 +179,23 @@ fun YourLocationCard() {
     val airpressurehPa = stringResource(R.string.airpressign)
     val percent = stringResource(R.string.percent)
 
+    var showRuuviData = remember { mutableStateOf(true) }
+
+    val tempData = sensorViewModel.tempData.observeAsState()
+    val humData = sensorViewModel.humData.observeAsState()
+    val presData = sensorViewModel.presData.observeAsState()
+
+    val tempRuuvi = sensorViewModel.tempDataTag.observeAsState()
+    val humRuuvi = sensorViewModel.humDataTag.observeAsState()
+    val presRuuvi = sensorViewModel.presDataTag.observeAsState()
+
+    val dewPoint = sensorViewModel.calculateDewPoint(showRuuviData.value)
+
     //Expansion
     var expandedState by remember { mutableStateOf(false)}
     //Arrow turn
     val rotationState by animateFloatAsState(
         targetValue = if (expandedState) 0f else 180f)
-
 
     Box(){
         Card(
@@ -186,9 +207,10 @@ fun YourLocationCard() {
                 .padding(start = 30.dp, top = 15.dp, end = 30.dp)
                 .shadow(elevation = 30.dp, shape = RoundedCornerShape(size = 10.dp), clip = false)
         ) {
-            Box(modifier = Modifier.fillMaxSize()
+            Box(modifier = Modifier
+                .fillMaxSize()
                 //Placehoder color for the back. Delete after photos added
-                .background(color= MaterialTheme.colors.primaryVariant)
+                .background(color = MaterialTheme.colors.primaryVariant)
             ) {
                 //Delete these after photos added
                 /* Image(
@@ -215,7 +237,18 @@ fun YourLocationCard() {
                         Text(temperature + "\u00B0", style = MaterialTheme.typography.h2, color = Color.White)
                         Text(yourlocation, style = MaterialTheme.typography.h4, color = Color.White)
                         Text(city, style = MaterialTheme.typography.subtitle1, color = Color.White)
-                        Text(time + am, style = MaterialTheme.typography.body2, color = Color.White)
+                        AndroidView(
+                            factory = { context ->
+                                TextClock(context).apply {
+                                    // on below line we are setting 12 hour format.
+                                    format12Hour?.let { this.format12Hour = "hh:mm a" }
+                                    // on below line we are setting time zone.
+                                    timeZone?.let { this.timeZone = it }
+                                    textSize.let { this.textSize = 20f }
+                                    setTextColor(ContextCompat.getColor(context, R.color.white))
+                                }
+                            }
+                        )
                         //Text(min + " / " + max, style = MaterialTheme.typography.body1, color = Color.White)
                     }
 
@@ -248,8 +281,9 @@ fun YourLocationCard() {
                             )
                         )
                 ) {
-                    Row(modifier = Modifier.fillMaxWidth()
-                        .padding(top= 10.dp),
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
                         horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                         Text(sensordatastring +"   ",
                             style = MaterialTheme
@@ -261,8 +295,8 @@ fun YourLocationCard() {
                     }
                     //Expansion is that sensordata part
                     if(expandedState){
-                        Column(modifier = Modifier.
-                        fillMaxSize()
+                        Column(modifier = Modifier
+                            .fillMaxSize()
                             .padding(top = 20.dp, bottom = 20.dp))
                         {
                             Row(modifier = Modifier
@@ -290,13 +324,53 @@ fun YourLocationCard() {
 
                                 Column(modifier = Modifier
                                     .padding( end = 20.dp),
-                                    verticalArrangement = Arrangement.spacedBy(15.dp))
+                                    verticalArrangement = Arrangement.spacedBy(15.dp),
+                                    horizontalAlignment = Alignment.End)
                                 {
-                                    Text("25"+ "\u00B0", modifier = Modifier.padding(vertical = 3.dp))
-                                    Text("55" + percent, modifier = Modifier.padding(vertical = 3.dp))
-                                    Text( "10.7"+"\u00B0", modifier = Modifier.padding(vertical = 3.dp))
-                                    Text("1013"+ airpressurehPa, modifier = Modifier.padding(vertical = 3.dp))
-
+                                    if (showRuuviData.value) {
+                                        Text(
+                                            if (tempRuuvi.value!=null) String.format("%.1f", tempRuuvi.value) + "\u00B0" else "N/A",
+                                            modifier = Modifier.padding(vertical = 3.dp)
+                                        )
+                                        Text(
+                                            if (humRuuvi.value!=null) String.format("%.0f", humRuuvi.value) + percent else "N/A",
+                                            modifier = Modifier.padding(vertical = 3.dp)
+                                        )
+                                        Text(
+                                            String.format("%.0f", dewPoint) + "°",
+                                            modifier = Modifier.padding(vertical = 3.dp)
+                                        )
+                                        Text(
+                                            if (presRuuvi.value!=null) String.format("%.0f", presRuuvi.value!! /100f) + airpressurehPa else "N/A",
+                                            modifier = Modifier.padding(vertical = 3.dp)
+                                        )
+                                    } else {
+                                        Text(
+                                            String.format("%.0f", tempData.value) + "°",
+                                            modifier = Modifier.padding(vertical = 3.dp)
+                                        )
+                                        Text(
+                                            String.format("%.0f", humData.value) + percent,
+                                            modifier = Modifier.padding(vertical = 3.dp)
+                                        )
+                                        Text(
+                                            String.format("%.0f", dewPoint) + "\u00B0",
+                                            modifier = Modifier.padding(vertical = 3.dp)
+                                        )
+                                        Text(
+                                            String.format("%.0f", presData.value) + airpressurehPa,
+                                            modifier = Modifier.padding(vertical = 3.dp)
+                                        )
+                                    }
+                                    Button(onClick = { showRuuviData.value = !showRuuviData.value},
+                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                                    modifier = Modifier.height(50.dp)) {
+                                        if (showRuuviData.value) {
+                                            Text("Sensor data")
+                                        } else {
+                                            Text("RuuviTag data")
+                                        }
+                                    }
                                 }
                             }
 

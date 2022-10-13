@@ -99,10 +99,6 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
             val navController = rememberNavController()
             weatherViewModel = WeatherViewModel()
 
-            val tempData = sensorViewModel.tempData.observeAsState()
-            val humData = sensorViewModel.humData.observeAsState()
-            val presData = sensorViewModel.presData.observeAsState()
-
             LaunchedEffect(Unit) {
                 createNotificationChannel(Units().channelId, applicationContext)
             }
@@ -115,8 +111,8 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
                 ) {
                     // The sensor data could be combined into an object
                     NavHost(navController, startDestination = "main view") {
-                        composable("main view") { MainView(navController, weatherViewModel) } // Replace with reference to official Composable
-                        composable("my location") { GraphView() } // Replace with reference to official Composable
+                        composable("main view") { MainView(navController, weatherViewModel, sensorViewModel, locationViewModel) } // Replace with reference to official Composable
+                        composable("my location") {  } // Replace with reference to official Composable
                         composable("detail view/{id}", arguments = listOf(navArgument("id") { type = NavType.IntType })) {
                             val id = it.arguments?.getInt("id") ?: 0
                             DetailView(navController, weatherViewModel, id) }
@@ -249,10 +245,11 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
 }
 
 @Composable
-fun MainView(navController: NavController, weatherViewModel: WeatherViewModel) {
+fun MainView(navController: NavController, weatherViewModel: WeatherViewModel, sensorViewModel: SensorViewModel, locationViewModel: LocationViewModel) {
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         SearchBar(weatherViewModel)
         ShowSearchResult(navController, weatherViewModel)
+        YourLocationCard(sensorViewModel, weatherViewModel, locationViewModel)
         ShowFavourites(navController, weatherViewModel)
     }
 }

@@ -33,4 +33,6 @@
     <string name="airpressure">Ilmanpaine</string>
     <string name="airpressign">hPa</string>
 
+    <string name="graphdeschum">Ilmankosteus</string>
+    <string name="graphdesctemp">Lämpötila</string>
 </resources>
