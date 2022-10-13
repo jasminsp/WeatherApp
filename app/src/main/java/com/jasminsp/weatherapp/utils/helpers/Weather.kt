@@ -179,7 +179,6 @@ fun getHumidityAverage(favourite: WeatherApiService.MainWeather): Int {
 
     val values = getHourlyWeatherVariables(favourite, 1)
     values.forEach {
-        Log.i("date", formatDate(LocalDateTime.parse(it.first)))
         if (isDateToday(formatDate(LocalDateTime.parse(it.first)))) {
             humidityValues.add(it.second)
         }

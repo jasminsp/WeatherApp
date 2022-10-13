@@ -3,9 +3,6 @@
     <string name="app_name">Forecast</string>
     <string name="placeholderSearch">Etsi paikkoja</string>
     <string name="forecast_letters">Kirkasta</string>
-    <string name="max">29</string>
-    <string name="min">24</string>
-    <string name="city">HELSINKI</string>
 
     <string name="wind">Tuuli</string>
     <string name="meters_second">m/s</string>

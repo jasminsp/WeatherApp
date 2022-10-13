@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Forecast</string>
     <string name="placeholderSearch">Search Locations</string>
-    <string name="city">HELSINKI</string>
-    <string name="temperature" translatable="false">27</string>
+    <string name="city" translatable="false">ESPOO</string>
+    <string name="temperature" translatable="false">8</string>
     <string name="time" translatable="false">5</string>
     <string name="am" translatable="false">am</string>
     <string name="pm" translatable="false">pm</string>
