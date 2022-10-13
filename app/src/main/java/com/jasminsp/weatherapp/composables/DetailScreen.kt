@@ -1,6 +1,5 @@
 package com.jasminsp.weatherapp.composables
 
-import android.util.Log
 import android.content.Context
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -41,196 +40,215 @@ fun HourlyWeather(favourite: WeatherApiService.MainWeather, navController: NavCo
     Box(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier
             .align(Alignment.TopStart)
-            .background(color = MaterialTheme.colors.primaryVariant)
-        ) {
+            .background(color = MaterialTheme.colors.primaryVariant)) {
             Image(
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
                 painter = painterResource(
                     getWeatherCondition(
                         favourite.current_weather.weathercode,
-                        2) as Int),
+                        2
+                    ) as Int
+                ),
                 contentDescription = ""
             )
-            Column(
-                modifier = Modifier
+            Column(modifier = Modifier
                     .padding(top = 30.dp)
                     .fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 IconButton(onClick = { navController.navigate("main view") }, modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(10.dp)) {
-                    Icon(
-                        painter = painterResource(R.drawable.arrow_left_44),
+                        .align(Alignment.Start)
+                        .padding(10.dp)
+                ) {
+                    Icon(painter = painterResource(R.drawable.arrow_left_44),
                         modifier = Modifier.requiredSize(40.dp),
                         tint = Color.White,
                         contentDescription = ""
                     )
                 }
-                Text(
-                    favourite.name.uppercase(),
+                Text(favourite.name.uppercase(),
                     style = MaterialTheme.typography.subtitle2,
                     color = Color.White
                 )
-                Text(
-                    "${favourite.current_weather.temperature.toInt()}${Units().temperatureShort}",
+                Text("${favourite.current_weather.temperature.toInt()}${Units().temperatureShort}",
                     style = MaterialTheme.typography.h6,
                     color = Color.White
                 )
             }
         }
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 250.dp)
-            ) {
-                    if (state) {
-                        // Hourly grid
-                        LazyVerticalGrid(
-                            cells = GridCells.Adaptive(120.dp),
-                            modifier = Modifier.padding(bottom = 50.dp, top = 25.dp),
-                            content = {
-                                items(dailyMin) { min ->
-                                    val index = dailyMin.indexOf(min)
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(bottom = 25.dp)
-                                    ) {
-                                            Column(
-                                                modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp),
-                                                horizontalAlignment = Alignment.CenterHorizontally
-                                            ) {
-                                                Card(Modifier
-                                                    .padding(4.dp),
-                                                    backgroundColor = MaterialTheme.colors.onSurface,
-                                                    elevation = 0.dp) {
-                                                    Column(Modifier.fillMaxSize().padding(4.dp),
-                                                        horizontalAlignment = Alignment.CenterHorizontally
-                                                    ) {
-                                                        WeekDay(min.first)
-                                                        Icon(
-                                                            painter = painterResource(R.drawable.clear_icon),
-                                                            modifier = Modifier.requiredSize(55.dp),
-                                                            contentDescription = "",
-                                                            tint = Color.Black
-                                                        )
-                                                        Row {
-                                                            Text("${String.format("%.0f", min.second)}${Units().temperatureShort}")
-                                                            Text(
-                                                                Units().divider,
-                                                                modifier = Modifier.padding(
-                                                                    horizontal = 5.dp
-                                                                )
-                                                            )
-                                                            Text(
-                                                                "${String.format("%.0f", getDailyWeatherByIndex(
-                                                                    favourite,
-                                                                    index
-                                                                ))
-                                                                }${Units().temperatureShort}"
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                            }
-                        )
-                    } else {
-                        // Daily grid
-                        LazyVerticalGrid(
-                            cells = GridCells.Adaptive(90.dp),
-                            modifier = Modifier.padding(bottom = 50.dp, top = 25.dp),
-                            content = {
-                                items(hourlyVariables) { hourly ->
-                                    val index = hourlyVariables.indexOf(hourly)
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(bottom = 25.dp)
+        Box(modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 250.dp)
+        ) {
+            if (state) {
+                // Hourly grid
+                LazyVerticalGrid(
+                    cells = GridCells.Adaptive(120.dp),
+                    modifier = Modifier.padding(bottom = 50.dp, top = 25.dp),
+                    content = {
+                        items(dailyMin) { min ->
+                            val index = dailyMin.indexOf(min)
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(bottom = 25.dp)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(horizontal = 10.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Card(
+                                        Modifier
+                                            .padding(4.dp),
+                                        backgroundColor = MaterialTheme.colors.onSurface,
+                                        elevation = 0.dp
                                     ) {
                                         Column(
-                                            modifier = Modifier.fillMaxSize(),
+                                            Modifier
+                                                .fillMaxSize()
+                                                .padding(4.dp),
                                             horizontalAlignment = Alignment.CenterHorizontally
                                         ) {
-                                            Card(
-                                                Modifier
-                                                    .padding(4.dp),
-                                                    backgroundColor = MaterialTheme.colors.onSurface,
-                                                elevation = 0.dp) {
-                                                Column(
-                                                    Modifier.fillMaxSize().padding(4.dp),
-                                                    horizontalAlignment = Alignment.CenterHorizontally
-                                                ) {
-                                                    Text(formatTime(LocalDateTime.parse(hourly.first)))
-                                                    Icon(
-                                                        painter = painterResource(
-                                                            getWeatherCondition(
-                                                                getHourlyWeatherCodeByIndex(
-                                                                    favourite,
-                                                                    index
-                                                                ), 1
-                                                            ) as Int
-                                                        ),
-                                                        modifier = Modifier.requiredSize(55.dp),
-                                                        contentDescription = "",
-                                                        tint = Color.Black
+                                            WeekDay(min.first)
+                                            Icon(
+                                                painter = painterResource(R.drawable.clear_icon),
+                                                modifier = Modifier.requiredSize(55.dp),
+                                                contentDescription = "",
+                                                tint = Color.Black
+                                            )
+                                            Row {
+                                                Text(
+                                                    "${
+                                                        String.format(
+                                                            "%.0f",
+                                                            min.second
+                                                        )
+                                                    }${Units().temperatureShort}"
+                                                )
+                                                Text(
+                                                    Units().divider,
+                                                    modifier = Modifier.padding(
+                                                        horizontal = 5.dp
                                                     )
-                                                    Text("${hourly.second.toInt()}${Units().temperatureShort}")
-                                                }
+                                                )
+                                                Text(
+                                                    "${
+                                                        String.format(
+                                                            "%.0f", getDailyWeatherByIndex(
+                                                                favourite,
+                                                                index
+                                                            )
+                                                        )
+                                                    }${Units().temperatureShort}"
+                                                )
                                             }
                                         }
                                     }
                                 }
                             }
-                        )
+                        }
                     }
+                )
+            } else {
+                // Daily grid
+                LazyVerticalGrid(
+                    cells = GridCells.Adaptive(90.dp),
+                    modifier = Modifier.padding(bottom = 50.dp, top = 25.dp),
+                    content = {
+                        items(hourlyVariables) { hourly ->
+                            val index = hourlyVariables.indexOf(hourly)
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(bottom = 25.dp)
+                            ) {
+                                Column(
+                                    modifier = Modifier.fillMaxSize(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Card(
+                                        Modifier
+                                            .padding(4.dp),
+                                        backgroundColor = MaterialTheme.colors.onSurface,
+                                        elevation = 0.dp
+                                    ) {
+                                        Column(
+                                            Modifier
+                                                .fillMaxSize()
+                                                .padding(4.dp),
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            Text(formatTime(LocalDateTime.parse(hourly.first)))
+                                            Icon(
+                                                painter = painterResource(
+                                                    getWeatherCondition(
+                                                        getHourlyWeatherCodeByIndex(
+                                                            favourite,
+                                                            index
+                                                        ), 1
+                                                    ) as Int
+                                                ),
+                                                modifier = Modifier.requiredSize(55.dp),
+                                                contentDescription = "",
+                                                tint = Color.Black
+                                            )
+                                            Text("${hourly.second.toInt()}${Units().temperatureShort}")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                )
+            }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 15.dp)
-                            .align(Alignment.BottomCenter)
-                            .background(MaterialTheme.colors.onSurface)
-                    ) {
-                        Column(modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .clickable { state = !state }) {
-                            Divider(
-                                color = if (!state) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onPrimary,
-                                thickness = 2.dp
-                            )
-                            Text(
-                                stringResource(id = R.string.todaysInfo),
-                                Modifier.align(Alignment.CenterHorizontally),
-                                style = MaterialTheme.typography.h5,
-                                color = if (!state) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onPrimary
-                            )
-                        }
-                        Column(modifier = Modifier.clickable { state = !state }) {
-                            Divider(
-                                color = if (!state) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSecondary,
-                                thickness = 2.dp
-                            )
-                            Text(
-                                stringResource(id = R.string.sevendaysinfo),
-                                Modifier.align(Alignment.CenterHorizontally),
-                                style = MaterialTheme.typography.h5,
-                                color = if (!state) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSecondary
-                            )
-                        }
-                    }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 15.dp)
+                    .align(Alignment.BottomCenter)
+                    .background(MaterialTheme.colors.onSurface)
+            ) {
+                Column(modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .clickable { state = !state }) {
+                    Divider(
+                        color = if (!state) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onPrimary,
+                        thickness = 2.dp
+                    )
+                    Text(
+                        stringResource(id = R.string.todaysInfo),
+                        Modifier.align(Alignment.CenterHorizontally),
+                        style = MaterialTheme.typography.h5,
+                        color = if (!state) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onPrimary
+                    )
                 }
-            Box(modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 740.dp)) {
-                Column() {
-                    DetailCard(favourite)
-                    GraphCard(favourite)
+                Column(modifier = Modifier.clickable { state = !state }) {
+                    Divider(
+                        color = if (!state) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSecondary,
+                        thickness = 2.dp
+                    )
+                    Text(
+                        stringResource(id = R.string.sevendaysinfo),
+                        Modifier.align(Alignment.CenterHorizontally),
+                        style = MaterialTheme.typography.h5,
+                        color = if (!state) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSecondary
+                    )
                 }
             }
+        }
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 740.dp)
+        ) {
+            Column {
+                DetailCard(favourite)
+                GraphCard(favourite)
+            }
+        }
     }
 }
 
@@ -389,8 +407,7 @@ fun GraphCard(favourite: WeatherApiService.MainWeather) {
     val temperatureVariables = getHourlyWeatherVariables(favourite, 0).take(12)
     val humidityVariables = getHourlyWeatherVariables(favourite, 1).take(12)
 
-    Card(
-        shape = MaterialTheme.shapes.large,
+    Card(shape = MaterialTheme.shapes.large,
         modifier = Modifier
             .fillMaxWidth()
             .padding(all = 20.dp)
@@ -398,8 +415,7 @@ fun GraphCard(favourite: WeatherApiService.MainWeather) {
                 elevation = 30.dp,
                 shape = RoundedCornerShape(size = 10.dp),
                 clip = false
-            ),
-    ) {
+            ),) {
         Column {
             GraphView(temperatureVariables, humidityVariables)
         }
@@ -423,10 +439,7 @@ fun ShowGraph(dataSetA: List<Pair<String, Double>>, dataSetB: List<Pair<String, 
         barList.add(BarEntry((index + 0.5f), value.second.toFloat()))
     }
 
-    Column(
-        modifier = Modifier
-            .padding(9.dp),
-    ) {
+    Column(modifier = Modifier.padding(9.dp)) {
         AndroidView(
             modifier = Modifier
                 .fillMaxSize(),
@@ -499,7 +512,7 @@ fun GraphView(tempData: List<Pair<String, Double>>, humData: List<Pair<String, D
         .height(400.dp)
         .width(400.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(Modifier.height(16.dp))
-        Row() {
+        Row {
             Text(stringResource(R.string.graphdeschum), color = Color.Gray)
             Spacer(Modifier.width(16.dp))
             Text(stringResource(R.string.graphdesctemp), color = Color.Blue)

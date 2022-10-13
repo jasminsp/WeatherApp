@@ -1,16 +1,12 @@
 package com.jasminsp.weatherapp.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
 import com.jasminsp.weatherapp.database.FavouriteData
 import com.jasminsp.weatherapp.database.WeatherDatabase
 import com.jasminsp.weatherapp.weather.WeatherViewModel
-import com.jasminsp.weatherapp.web.LocationApiService
 import com.jasminsp.weatherapp.web.WeatherApiService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 object WeatherRepository {
@@ -19,7 +15,7 @@ object WeatherRepository {
     val favouriteData: LiveData<List<FavouriteData>> = weatherDao.getAllFavourites()
 
 
-     // Get weather data from api
+    // Get weather data from api
     suspend fun getWeather(lat: Double, long: Double) = call.getHourlyWeatherWithLocation(lat, long)
 
     // Add data favourite to database
@@ -36,9 +32,7 @@ object WeatherRepository {
         val viewModel = WeatherViewModel()
         CoroutineScope(Dispatchers.IO).launch {
             favouriteData.value?.forEach {
-                //viewModel.getFavouriteWeather(it.latitude, it.longitude, it.locationUid)
                 viewModel.getAllWeather()
-                Log.i("WORKER", "refressing ${it.locationUid}")
             }
         }
     }

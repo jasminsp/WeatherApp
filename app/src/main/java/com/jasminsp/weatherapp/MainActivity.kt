@@ -15,24 +15,16 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
@@ -48,9 +40,7 @@ import com.jasminsp.weatherapp.composables.*
 import com.jasminsp.weatherapp.sensor.SensorViewModel
 import com.jasminsp.weatherapp.ui.theme.WeatherAppTheme
 import com.jasminsp.weatherapp.utils.createNotificationChannel
-import com.jasminsp.weatherapp.utils.showNotification
 import com.jasminsp.weatherapp.weather.WeatherViewModel
-import com.jasminsp.weatherapp.web.WeatherApiService
 import com.jasminsp.weatherapp.worker.WorkManagerScheduler
 import com.ruuvi.station.bluetooth.FoundRuuviTag
 import com.ruuvi.station.bluetooth.IRuuviTagScanner
@@ -64,6 +54,7 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
         private lateinit var sensorManager: SensorManager
         private lateinit var ruuviRangeNotifier: IRuuviTagScanner
         private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
+
         // helper variables for permission check
         private var isBTScanPermissionGranted = false
         private var isBTConnectPermissionGranted = false
@@ -81,12 +72,17 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
         WorkManagerScheduler.refreshPeriodicWork(this)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         ruuviRangeNotifier = RuuviRangeNotifier(application, "MainActivity")
-        permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
-            isLocationPermissionGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: isLocationPermissionGranted
-            isBTScanPermissionGranted = permissions[Manifest.permission.BLUETOOTH_SCAN] ?: isBTScanPermissionGranted
-            isBTConnectPermissionGranted = permissions[Manifest.permission.BLUETOOTH_CONNECT] ?: isBTConnectPermissionGranted
-            isBTAdminPermissionGranted = permissions[Manifest.permission.BLUETOOTH_ADMIN] ?: isBTAdminPermissionGranted
-        }
+        permissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+                isLocationPermissionGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION]
+                    ?: isLocationPermissionGranted
+                isBTScanPermissionGranted =
+                    permissions[Manifest.permission.BLUETOOTH_SCAN] ?: isBTScanPermissionGranted
+                isBTConnectPermissionGranted = permissions[Manifest.permission.BLUETOOTH_CONNECT]
+                    ?: isBTConnectPermissionGranted
+                isBTAdminPermissionGranted =
+                    permissions[Manifest.permission.BLUETOOTH_ADMIN] ?: isBTAdminPermissionGranted
+            }
 
         locationViewModel = LocationViewModel()
         sensorViewModel = SensorViewModel()
@@ -106,17 +102,25 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
             }
 
             WeatherAppTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    // The sensor data could be combined into an object
                     NavHost(navController, startDestination = "main view") {
-                        composable("main view") { MainView(navController, weatherViewModel, sensorViewModel, locationViewModel) } // Replace with reference to official Composable
-                        composable("detail view/{id}", arguments = listOf(navArgument("id") { type = NavType.IntType })) {
+                        composable("main view") {
+                            MainView(
+                                navController,
+                                weatherViewModel,
+                                sensorViewModel,
+                            )
+                        }
+                        composable(
+                            "detail view/{id}",
+                            arguments = listOf(navArgument("id") { type = NavType.IntType })
+                        ) {
                             val id = it.arguments?.getInt("id") ?: 0
-                            DetailView(navController, weatherViewModel, id) }
+                            DetailView(navController, weatherViewModel, id)
+                        }
                     }
                 }
             }
@@ -124,7 +128,6 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
     }
 
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
-        // Do something here if sensor accuracy changes.
         return
     }
 
@@ -142,18 +145,14 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
     }
 
     override fun onResume() {
-        // Register a listener for the internal sensors
         setUpSensor()
-        // Start scanning for RuuviTags
         startScanning()
         super.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        // unregister the listener when activity pauses to save battery, change if want to work in background
         sensorManager.unregisterListener(this)
-        // stop scanning for RuuviTags when the activity is in background
         ruuviRangeNotifier.stopScanning()
     }
 
@@ -162,11 +161,6 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
     }
 
     override fun onTagFound(tag: FoundRuuviTag) {
-        // Log info on found RuuviTags
-        //Log.d("RUUVI", tag.temperature.toString())
-        //Log.d("RUUVI", tag.humidity.toString())
-        //Log.d("RUUVI", tag.pressure.toString())
-
         // Update ruuvitag info in SensorViewModel
         if (tag.temperature != null) {
             sensorViewModel.tempDataTag.value = tag.temperature?.toFloat()
@@ -176,7 +170,7 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
         }
         if (tag.pressure != null) {
             sensorViewModel.presDataTag.value = tag.pressure?.toFloat()
-            }
+        }
     }
 
     private fun setUpSensor() {
@@ -186,13 +180,28 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
         val sensorAmbPres = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
 
         sensorAmbTemp.also {
-            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_NORMAL)
+            sensorManager.registerListener(
+                this,
+                it,
+                SensorManager.SENSOR_DELAY_NORMAL,
+                SensorManager.SENSOR_DELAY_NORMAL
+            )
         }
         sensorRelHum.also {
-            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_NORMAL)
+            sensorManager.registerListener(
+                this,
+                it,
+                SensorManager.SENSOR_DELAY_NORMAL,
+                SensorManager.SENSOR_DELAY_NORMAL
+            )
         }
         sensorAmbPres.also {
-            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_NORMAL)
+            sensorManager.registerListener(
+                this,
+                it,
+                SensorManager.SENSOR_DELAY_NORMAL,
+                SensorManager.SENSOR_DELAY_NORMAL
+            )
         }
     }
 
@@ -219,38 +228,42 @@ class MainActivity : ComponentActivity(), SensorEventListener, IRuuviTagScanner.
 
         val permissionRequest: MutableList<String> = ArrayList()
 
-        if (!isLocationPermissionGranted){
+        if (!isLocationPermissionGranted) {
             permissionRequest.add(Manifest.permission.ACCESS_FINE_LOCATION)
         }
 
-        if (!isBTScanPermissionGranted){
+        if (!isBTScanPermissionGranted) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 permissionRequest.add(Manifest.permission.BLUETOOTH_SCAN)
             }
         }
 
-        if (!isBTConnectPermissionGranted){
+        if (!isBTConnectPermissionGranted) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 permissionRequest.add(Manifest.permission.BLUETOOTH_CONNECT)
             }
         }
 
-        if (!isBTAdminPermissionGranted){
+        if (!isBTAdminPermissionGranted) {
             permissionRequest.add(Manifest.permission.BLUETOOTH_ADMIN)
         }
 
-        if (permissionRequest.isNotEmpty()){
+        if (permissionRequest.isNotEmpty()) {
             permissionLauncher.launch(permissionRequest.toTypedArray())
         }
     }
 }
 
 @Composable
-fun MainView(navController: NavController, weatherViewModel: WeatherViewModel, sensorViewModel: SensorViewModel, locationViewModel: LocationViewModel) {
+fun MainView(
+    navController: NavController,
+    weatherViewModel: WeatherViewModel,
+    sensorViewModel: SensorViewModel,
+) {
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         SearchBar(weatherViewModel)
         ShowSearchResult(navController, weatherViewModel)
-        YourLocationCard(sensorViewModel, weatherViewModel, locationViewModel)
+        YourLocationCard(sensorViewModel, weatherViewModel)
         ShowFavourites(navController, weatherViewModel)
     }
 }
@@ -261,15 +274,15 @@ fun DetailView(navController: NavController, viewModel: WeatherViewModel, id: In
     val favourite = favourites?.find { it.id == id }
 
     Box(Modifier.verticalScroll(rememberScrollState())) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1500.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1500.dp)
 
-            ) {
-                if (favourite != null) {
-                        HourlyWeather(favourite, navController)
-                }
+        ) {
+            if (favourite != null) {
+                HourlyWeather(favourite, navController)
             }
+        }
     }
 }
