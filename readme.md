@@ -50,7 +50,23 @@ $ git clone https://github.com/jasminsp/WeatherApp.git
 
 ## Screenshots
 
-Some of the views
+<img
+  src="https://users.metropolia.fi/~mattist/forecast/forecast_a.png"
+  alt="Main view with weather info"
+  title="Forecast main view"
+  style="display: inline-block; margin: 0 auto; max-width: 300px">
+  
+<img
+  src="https://users.metropolia.fi/~mattist/forecast/forecast_a.png"
+  alt="Detail view with hourly weather info"
+  title="Forecast detail view"
+  style="display: inline-block; margin: 0 auto; max-width: 300px">
+  
+<img
+  src="https://users.metropolia.fi/~mattist/forecast/forecast_a.png"
+  alt="Detail view with graph"
+  title="Forecast graph"
+  style="display: inline-block; margin: 0 auto; max-width: 300px">
 
 ## Contributors
 
