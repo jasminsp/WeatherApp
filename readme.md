@@ -51,10 +51,10 @@ $ git clone https://github.com/jasminsp/WeatherApp.git
 ## Screenshots
 
 <img
-  src="https://users.metropolia.fi/~mattist/forecast/forecast_screenshots.png"
+  src="https://users.metropolia.fi/~mattist/forecast/forecast_screenshots_final.png"
   alt="Main view with weather info"
   title="Forecast main view"
-  style="display: inline-block; margin: 0 auto; width: 600px">
+  style="display: inline-block; margin: 0 auto; width: 640px">
 
 ## Contributors
 
