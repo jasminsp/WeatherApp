@@ -48,9 +48,20 @@ $ git clone https://github.com/jasminsp/WeatherApp.git
 
 ```
 
+## Connecting to external sensors
+
+Once installed and started the app will automatically connect to any RuuviTag sensors that are in range via BTLe.
+The user needs only to accept the permission requests as they are presented. At their current state the permission
+checks can sometimes be a bit glitchy. If the app crashed, just restart it and accept the rest of the required
+permissions at your leisure.
+
 ## Screenshots
 
-Some of the views
+<img
+  src="https://users.metropolia.fi/~mattist/forecast/forecast_screenshots_final.png"
+  alt="Main view with weather info"
+  title="Forecast main view"
+  style="display: inline-block; margin: 0 auto; width: 640px">
 
 ## Contributors
 
